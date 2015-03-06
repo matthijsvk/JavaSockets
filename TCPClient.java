@@ -16,8 +16,6 @@ class TCPClient
    */
   public static void main(String[] args) throws Exception
     {
-	
-	
 
 	String command = args[0];
 	String host = args[1];
@@ -25,9 +23,6 @@ class TCPClient
 	String requestedFile;
 		if (host.contains("/")) {
 			shortHost = host.substring(0,host.indexOf("/"));
-			System.out.println(shortHost);
-			System.out.println(host.indexOf("/"));
-			System.out.println(host.length());
 			requestedFile = host.substring(host.indexOf("/"), host.length());
 			System.out.println("requestedFile: "+ requestedFile);
 		}
@@ -35,11 +30,26 @@ class TCPClient
 			shortHost = host;
 			requestedFile = "/";
 		}
+	
+	System.out.println("dude this isn't even the first loop");
+	
+	
+	
+	// look for file extension
+	int placeInUrl = requestedFile.length() -1;
+	String extension = ".html";
+	while (requestedFile.charAt(placeInUrl) != ("/").charAt(0) && extension == ".html"){
+		if (requestedFile.charAt(placeInUrl) == (".").charAt(0)){
+			extension = requestedFile.substring(placeInUrl);
+				
+		}
+		placeInUrl = placeInUrl -1;
+	}
 		
 	String port = args[2];
 	String httpVersion = args[3];
 	
-	
+	System.out.println("we got this far");
 
     // Create a socket to localhost (this machine, port 6789).
     Socket clientSocket = new Socket(shortHost, Integer.parseInt(port));
@@ -66,27 +76,37 @@ class TCPClient
     }
     
     // make file to write to
-    PrintWriter out = new PrintWriter("receivedStuff.html");
+    PrintWriter textWriter = new PrintWriter("receivedStuff"+extension);
+    FileOutputStream binWriter = new FileOutputStream("receivedStuffBin"+extension);
     
-    boolean htmlPartStarted = false;
     
+    boolean entityPartStarted = false;
+    
+    
+    System.out.println("a little further even");
     
     // Read text from the server and write it to the screen.
     String outputFromServer = inFromServer.readLine();
-    while (outputFromServer != null){
-    if (outputFromServer.contains("<html")==true){
-    	htmlPartStarted = true;
-    }
     System.out.println(outputFromServer);
-    if (htmlPartStarted == true){
-    out.println(outputFromServer);
+    while (outputFromServer != null){
+    if (outputFromServer.length() < 3){
+    	entityPartStarted = true;
+    }
+    if (!entityPartStarted){
+    	System.out.println(outputFromServer);
     }
     outputFromServer = inFromServer.readLine();
+    if (entityPartStarted == true && outputFromServer != null){
+        textWriter.println(outputFromServer);
+        byte[] outputFromServerBin = outputFromServer.getBytes();
+        binWriter.write(outputFromServerBin);
+        }
     }
-    
+    System.out.println("and we are done!");
     
     //close the stream to text file
-    out.close();
+    textWriter.close();
+    binWriter.close();
     
     
     // Close the socket.
