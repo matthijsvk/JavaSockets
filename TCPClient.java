@@ -16,46 +16,74 @@ class TCPClient
    */
   public static void main(String[] args) throws Exception
     {
-	  
-	  for (String s: args) {
-          System.out.println(s);
-      }
-	 
-	String host = args[0];
-			 
-    // Create a buffered reader to take user input from the console. 
-    BufferedReader inFromUser = new BufferedReader( new InputStreamReader(System.in));
-    System.out.print("Command: ");
+	
+	
+
+	String command = args[0];
+	String host = args[1];
+	String shortHost;
+	String requestedFile;
+		if (host.contains("/")) {
+			shortHost = host.substring(0,host.indexOf("/"));
+			System.out.println(shortHost);
+			System.out.println(host.indexOf("/"));
+			System.out.println(host.length());
+			requestedFile = host.substring(host.indexOf("/"), host.length());
+			System.out.println("requestedFile: "+ requestedFile);
+		}
+		else{
+			shortHost = host;
+			requestedFile = "/";
+		}
+		
+	String port = args[2];
+	String httpVersion = args[3];
+	
+	
 
     // Create a socket to localhost (this machine, port 6789).
-    Socket clientSocket = new Socket(host, 80);
+    Socket clientSocket = new Socket(shortHost, Integer.parseInt(port));
 
     // Create outputstream (convenient data writer) to this host. 
     DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-
+    
+    
     // Create an inputstream (convenient data reader) to this host
     BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-    // Read text from the console and write it to the server. 
-    String sentence = inFromUser.readLine();
-    outToServer.writeBytes(sentence + "\r\n\r\n");
-
+    
+    
+    if (httpVersion.equals("1.0")){
+    	System.out.println("1.0 entered");
+        outToServer.writeBytes(command + " "  + requestedFile + " HTTP/1.0" + "\r\n\r\n");
+        System.out.println(command +  " "  + requestedFile + " HTTP/1.0" + "\r\n\r\n");
+        }
+    else if (httpVersion.equals("1.1")){
+    	System.out.println("1.1 entered");
+    outToServer.writeBytes(command + " "+ requestedFile + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n");
+    }
+    else{
+    	//throw error
+    }
+    
     // make file to write to
     PrintWriter out = new PrintWriter("receivedStuff.html");
     
     boolean htmlPartStarted = false;
     
+    
     // Read text from the server and write it to the screen.
-    while (inFromServer.readLine() != null){
-    String modifiedSentence = inFromServer.readLine();
-    if (modifiedSentence.contains("<html>")==true){
+    String outputFromServer = inFromServer.readLine();
+    while (outputFromServer != null){
+    if (outputFromServer.contains("<html")==true){
     	htmlPartStarted = true;
     }
-    System.out.println(modifiedSentence);
+    System.out.println(outputFromServer);
     if (htmlPartStarted == true){
-    out.println(modifiedSentence);
+    out.println(outputFromServer);
     }
+    outputFromServer = inFromServer.readLine();
     }
+    
     
     //close the stream to text file
     out.close();
