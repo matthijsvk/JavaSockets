@@ -1,8 +1,9 @@
+package test;
 import java.io.File;
 import java.io.IOException;
 
 
-public class makingDirs {
+public class makingDirsTest {
 
 	public static void main(String[] args) throws IOException {
 		String imageURL = "www.javatpoint.com/images/imageFiles/moreImageFolders/imageOne.jpg";
