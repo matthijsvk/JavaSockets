@@ -99,19 +99,19 @@ class TCPClient
 			    		byte[] outputFromServerBin = outputFromServer.getBytes();
 			    		binWriter.write(outputFromServerBin);
 			    	}
-//			if (outputFromServer.length() < 3){  		// < 3  because that marks the newlines at the end of the header
-//				entityPartStarted = true;
-//			}
-//			if (!entityPartStarted){
-//				System.out.println(outputFromServer);	// just print 
-//			}
-//			else {
-//				System.out.println(outputFromServer);
-//				textWriter.println(outputFromServer);						// for ascii type files (eg html)
-//				byte[] outputFromServerBin = outputFromServer.getBytes();	// for binary files (eg images)
-//				binWriter.write(outputFromServerBin);
-//			}
-//			outputFromServer = inFromServer.readLine();
+//			    	if (outputFromServer.length() < 3){  		// < 3  because that marks the newlines at the end of the header
+//			    		entityPartStarted = true;
+//			    	}
+//			    	if (!entityPartStarted){
+//			    		System.out.println(outputFromServer);	// just print 
+//			    	}
+//			    	else {
+//			    		System.out.println(outputFromServer);
+//			    		textWriter.println(outputFromServer);						// for ascii type files (eg html)
+//			    		byte[] outputFromServerBin = outputFromServer.getBytes();	// for binary files (eg images)
+//			    		binWriter.write(outputFromServerBin);
+//			    	}
+//			    	outputFromServer = inFromServer.readLine();
 		}
 		System.out.println("and we are done!");
 
