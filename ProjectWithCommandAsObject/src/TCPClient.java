@@ -25,13 +25,13 @@
 				Get getCommand = new Get();
 		}
 		if(command == "POST"){
-				Get getCommand = new Get();
+				Post postCommand = new Post();
 		}
 		if(command == "PUT"){
-				Get getCommand = new Get();
+				Put putCommand = new Put();
 		}
 		if(command == "HEAD"){
-				Get headCommand = new Get();
+				Head headCommand = new Head();
 		}
 		String host = args[1];
 		String shortHost; // only www.abc.def
