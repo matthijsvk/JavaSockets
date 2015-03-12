@@ -1,6 +1,9 @@
 
-public class Get extends Command {
+public class Get extends RetrieveDataCommand {
 
 	
+public Get() {
+	
+}
 	
 }

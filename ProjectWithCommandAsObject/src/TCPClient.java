@@ -19,9 +19,20 @@
 	  public static void main(String[] args) throws Exception
 	    {
 		  
-		 
 
 		String command = args[0];
+		if(command == "GET"){
+				Get getCommand = new Get();
+		}
+		if(command == "POST"){
+				Get getCommand = new Get();
+		}
+		if(command == "PUT"){
+				Get getCommand = new Get();
+		}
+		if(command == "HEAD"){
+				Get headCommand = new Get();
+		}
 		String host = args[1];
 		String shortHost; // only www.abc.def
 		String requestedFile; // everything after the shorthost
