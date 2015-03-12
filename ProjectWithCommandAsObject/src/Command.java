@@ -1,5 +1,6 @@
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 
 public class Command {
@@ -31,5 +32,9 @@ public class Command {
 	    else{
 	    	//throw error
 	    }
+	}
+	
+	public void execute() throws IOException{
+		outToServer.writeBytes(query);
 	}
 }

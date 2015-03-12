@@ -49,10 +49,8 @@
 		// Create an inputstream (convenient data reader) to this host
 		BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
 				
-				
-				
 		String command = args[0];
-		if(command == "GET"){
+		if(command.equals("GET")){
 				Get getCommand = new Get(shortHost,hostExtension, args[3],command, outToServer,inFromServer);
 				getCommand.execute();
 		}

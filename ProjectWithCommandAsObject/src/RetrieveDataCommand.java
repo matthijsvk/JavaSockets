@@ -23,7 +23,7 @@ public RetrieveDataCommand(String shortHost,String hostExtension, String HTTPVer
 }
 
 public void execute() throws IOException{
-	
+	super.execute();
 	boolean entityPartStarted = false; // entity = stuff after header
 	int a = 0;
 	int b = 0;
@@ -31,7 +31,7 @@ public void execute() throws IOException{
 	int d = 0;
 
 	// Read data from the server and write it to the screen.
-	int outputFromServer = this.inFromServer.read();
+	int outputFromServer = inFromServer.read();
 	System.out.print((char)outputFromServer);
 	while (outputFromServer != -1 && !entityPartStarted){
 	if (a == 10 && b == 13 && c == 10 && d == 13){
@@ -46,7 +46,6 @@ public void execute() throws IOException{
 	b = a;
 	a = outputFromServer;
 	}
-
 	}
 
 }
