@@ -8,8 +8,8 @@ public class Command {
 	private String HTTPVersion;
 	private String hostExtension;
 	private String query;
-	private DataOutputStream outToServer;
-	private BufferedInputStream inFromServer;
+	protected DataOutputStream outToServer;
+	protected BufferedInputStream inFromServer;
 	
 	public Command(String shortHost,String hostExtension, String HTTPVersion, String command,DataOutputStream outToServer,BufferedInputStream inFromServer){
 		this.shortHost = shortHost;
