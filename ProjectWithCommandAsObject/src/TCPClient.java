@@ -11,7 +11,7 @@
 	 * Computer Networks, KU Leuven.
 	 *
 	 */
-	public class HTTPClient {
+	public class TCPClient {
 
 	  /*
 	   * Everything is included in the main method.
