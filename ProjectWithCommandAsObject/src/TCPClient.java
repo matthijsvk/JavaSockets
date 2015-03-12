@@ -13,16 +13,47 @@
 	 */
 	public class TCPClient {
 
-	  /*
-	   * Everything is included in the main method.
-	   */
 	  public static void main(String[] args) throws Exception
 	    {
-		  
+		  String host = args[1];
+			String shortHost; // only www.abc.def
+			String hostExtension; // everything after the shorthost
+			host = host.replace("http://","");	//filter out http:// chars if they exist
+				if (host.contains("/")) {
+					shortHost = host.substring(0,host.indexOf("/"));
+					hostExtension = host.substring(host.indexOf("/"), host.length());
+				}
+				else{
+					shortHost = host;
+					hostExtension = "/";
+				}
+					  
 
+				
+				
+				
+				
+				
+				
+		String port = args[2];
+		String httpVersion = args[3];
+				
+				
+		// Create a socket to localhost (this machine, port 6789).
+		Socket clientSocket = new Socket(shortHost, Integer.parseInt(port));
+
+		// Create outputstream (convenient data writer) to this host. 
+		DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+			    
+			    
+		// Create an inputstream (convenient data reader) to this host
+		BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
+				
+				
+				
 		String command = args[0];
 		if(command == "GET"){
-				Get getCommand = new Get();
+				Get getCommand = new Get(shortHost,hostExtension, args[3],command);
 		}
 		if(command == "POST"){
 				Post postCommand = new Post();
@@ -31,54 +62,9 @@
 				Put putCommand = new Put();
 		}
 		if(command == "HEAD"){
-				Head headCommand = new Head();
 		}
-		String host = args[1];
-		String shortHost; // only www.abc.def
-		String requestedFile; // everything after the shorthost
-		host = host.replace("http://","");	//filter out http:// chars if they exist
-			if (host.contains("/")) {
-				shortHost = host.substring(0,host.indexOf("/"));
-				requestedFile = host.substring(host.indexOf("/"), host.length());
-				System.out.println("requestedFile: "+ requestedFile);
-			}
-			else{
-				shortHost = host;
-				requestedFile = "/";
-			}
-		
-		System.out.println("dude this isn't even the first loop");
-		
 		
 
-		// look for file extension (loop in reverse over chars until '.' found
-		int placeInUrl = requestedFile.length() -1;
-		String extension = ".html";
-		while (requestedFile.charAt(placeInUrl) != ("/").charAt(0) && extension == ".html"){
-			if (requestedFile.charAt(placeInUrl) == (".").charAt(0)){
-				extension = requestedFile.substring(placeInUrl);
-					
-			}
-			placeInUrl = placeInUrl -1;
-		}
-			
-		String port = args[2];
-		String httpVersion = args[3];
-		
-		System.out.println("we got this far");
-
-	    // Create a socket to localhost (this machine, port 6789).
-	    Socket clientSocket = new Socket(shortHost, Integer.parseInt(port));
-
-	    // Create outputstream (convenient data writer) to this host. 
-	    DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-	    
-	    
-	    // Create an inputstream (convenient data reader) to this host
-	    BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
-	    
-	    System.out.println("just a little further");
-	    
 	    if (httpVersion.equals("1.0")){
 	    	System.out.println("1.0 entered");
 	        outToServer.writeBytes(command + " "  + requestedFile + " HTTP/1.0" + "\r\n\r\n");

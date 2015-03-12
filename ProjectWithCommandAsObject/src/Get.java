@@ -2,8 +2,8 @@
 public class Get extends RetrieveDataCommand {
 
 	
-public Get() {
-	
+public Get(String shortHost,String hostExtension,String HTTPVersion, String command) {
+	super(shortHost,hostExtension,HTTPVersion, command);
 }
 	
 }
