@@ -16,6 +16,8 @@ class TCPClient
    */
   public static void main(String[] args) throws Exception
     {
+	  
+	 
 
 	String command = args[0];
 	String host = args[1];
@@ -59,8 +61,9 @@ class TCPClient
     
     
     // Create an inputstream (convenient data reader) to this host
-    BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
     
+    System.out.println("just a little further");
     
     if (httpVersion.equals("1.0")){
     	System.out.println("1.0 entered");
@@ -76,8 +79,7 @@ class TCPClient
     }
     
     // make file to write to
-    PrintWriter textWriter = new PrintWriter("receivedStuff"+extension);
-    FileOutputStream binWriter = new FileOutputStream("receivedStuffBin"+extension);
+    FileOutputStream binWriter = new FileOutputStream("receivedStuff"+extension);
     
     
     boolean entityPartStarted = false;
@@ -85,27 +87,33 @@ class TCPClient
     
     System.out.println("a little further even");
     
-    // Read text from the server and write it to the screen.
-    String outputFromServer = inFromServer.readLine();
-    System.out.println(outputFromServer);
-    while (outputFromServer != null){
-    if (outputFromServer.length() < 3){
+    int a = 0;
+	int b = 0;
+	int c = 0;
+	int d = 0;
+    
+    // Read data from the server and write it to the screen.
+    int outputFromServer = inFromServer.read();
+    System.out.print((char)outputFromServer);
+    while (outputFromServer != -1){
+    if (a == 10 && b == 13 && c == 10 && d == 13){
     	entityPartStarted = true;
     }
     if (!entityPartStarted){
-    	System.out.println(outputFromServer);
+    	System.out.print((char)outputFromServer);
     }
-    outputFromServer = inFromServer.readLine();
-    if (entityPartStarted == true && outputFromServer != null){
-        textWriter.println(outputFromServer);
-        byte[] outputFromServerBin = outputFromServer.getBytes();
-        binWriter.write(outputFromServerBin);
+    outputFromServer = inFromServer.read();
+    d = c;
+    c = b;
+    b = a;
+    a = outputFromServer;
+   if (entityPartStarted == true && outputFromServer != -1){
+        binWriter.write(outputFromServer);
         }
     }
     System.out.println("and we are done!");
     
     //close the stream to text file
-    textWriter.close();
     binWriter.close();
     
     
