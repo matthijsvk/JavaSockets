@@ -9,20 +9,21 @@ import java.net.*;
  *
  */
 class TCPClient
-  {
+{
 
-  /*
-   * Everything is included in the main method.
-   */
-  public static void main(String[] args) throws Exception
-    {
-	  
-	 
+	/*
+	 * Everything is included in the main method.
+	 */
+	public static void main(String[] args) throws Exception
+	{
 
-	String command = args[0];
-	String host = args[1];
-	String shortHost;
-	String requestedFile;
+		String command = args[0];
+		String host = args[1];
+		String shortHost;	// only www.abc.def
+		String requestedFile; // everything after the shorthost
+		
+		host = host.replace("http://","");	//filter out http:// chars if they exist
+>>>>>>> 90eabac444a77c7dfbe7ba39a44c94dcd7f5131e
 		if (host.contains("/")) {
 			shortHost = host.substring(0,host.indexOf("/"));
 			requestedFile = host.substring(host.indexOf("/"), host.length());
@@ -32,19 +33,20 @@ class TCPClient
 			shortHost = host;
 			requestedFile = "/";
 		}
-	
-	System.out.println("dude this isn't even the first loop");
-	
-	
-	
-	// look for file extension
-	int placeInUrl = requestedFile.length() -1;
-	String extension = ".html";
-	while (requestedFile.charAt(placeInUrl) != ("/").charAt(0) && extension == ".html"){
-		if (requestedFile.charAt(placeInUrl) == (".").charAt(0)){
-			extension = requestedFile.substring(placeInUrl);
-				
+
+		//System.out.println("dude this isn't even the first loop");
+
+		// look for file extension (loop in reverse over chars until '.' found
+		int placeInUrl = requestedFile.length() -1;
+		String extension = ".html";
+		while (requestedFile.charAt(placeInUrl) != ("/").charAt(0) && extension == ".html"){
+			if (requestedFile.charAt(placeInUrl) == (".").charAt(0)){
+				extension = requestedFile.substring(placeInUrl);
+
+			}
+			placeInUrl = placeInUrl -1;
 		}
+<<<<<<< HEAD
 		placeInUrl = placeInUrl -1;
 	}
 		
@@ -79,10 +81,10 @@ class TCPClient
     }
     
     // make file to write to
-    FileOutputStream binWriter = new FileOutputStream("receivedStuff"+extension);
+    FileOutputStream binWriter = new FileOutputStream("receivedStuff"+extension); // for binary files (eg images) AND text files
     
     
-    boolean entityPartStarted = false;
+    boolean entityPartStarted = false; // entity = stuff after header
     
     
     System.out.println("a little further even");
@@ -113,6 +115,31 @@ class TCPClient
     }
     System.out.println("and we are done!");
     
+    
+    if (outputFromServer.length() < 3){  		// < 3  because that marks the newlines at the end of the header
+//		entityPartStarted = true;
+//	}
+//	if (!entityPartStarted){
+//		System.out.println(outputFromServer);	// just print 
+//	}
+//	else {
+//		System.out.println(outputFromServer);
+//		textWriter.println(outputFromServer);						// for ascii type files (eg html)
+//		byte[] outputFromServerBin = outputFromServer.getBytes();	// for binary files (eg images)
+//		binWriter.write(outputFromServerBin);
+//	}
+//	outputFromServer = inFromServer.readLine();
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //close the stream to text file
     binWriter.close();
     
@@ -123,3 +150,4 @@ class TCPClient
     } // End of main method
 
   } // End of class TCPClient
+  
