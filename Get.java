@@ -18,11 +18,9 @@ public class Get extends RetrieveDataCommand {
 	protected int length;
 
 
-
 	public Get(String shortHost,String hostExtension,String HTTPVersion, String command, DataOutputStream outToServer, BufferedInputStream inFromServer) {
 		super(shortHost,hostExtension,HTTPVersion, command, outToServer, inFromServer);
 	}
-
 
 	public void execute() throws IOException{
 
@@ -31,9 +29,8 @@ public class Get extends RetrieveDataCommand {
 		this.pullEntity();
 	}
 
-
 	private void pullEntity() throws IOException {
-		
+
 		String URL;
 		String[] results; String path; String name;
 		if (!this.hostExtension.equals("/")){		//file, not homepage
@@ -46,7 +43,7 @@ public class Get extends RetrieveDataCommand {
 			path = this.shortHost; name = this.shortHost.replace("www.","");int puntIndex=shortHost.indexOf(".");
 			name = name.substring(0, puntIndex);path=name+".html";
 		}
-		
+
 		// make file to write to
 		FileOutputStream binWriter = new FileOutputStream(path);
 
@@ -73,7 +70,7 @@ public class Get extends RetrieveDataCommand {
 					String imageURL = el.attr("src");   
 					results = getNamePath(imageURL, this.shortHost);
 					String imagePath = results[0]; String imageName = results[1];
-					
+
 					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
 					Command query = new Get(this.shortHost,imagePath,this.HTTPVersion, "GET", outToServer, inFromServer);
 					query.execute();
@@ -131,7 +128,7 @@ public class Get extends RetrieveDataCommand {
 		}
 		length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
 	}
-	
+
 	public String[] getNamePath(String URL, String shortHost){
 		if (!URL.contains(shortHost)){
 			URL = shortHost + "/" + URL;
@@ -163,12 +160,10 @@ public class Get extends RetrieveDataCommand {
 				name = path; 
 			}
 		}
-
 		String[] results = new String[] {path, name};
 		return results;
-		
 	}
-	
+
 	/**
 	 * this function creates the directories to which the image will be saved
 	 * @param path
@@ -176,7 +171,6 @@ public class Get extends RetrieveDataCommand {
 	 */
 	public static void createDirStructure(String path, String name){
 		// sometimes image url's don't include the "http://shortHost/" part
-		
 
 		// get the DIRECTORY TREE and create it locally : imagePath - imageName
 		String dirNames = path.replace(name,"");		
@@ -191,13 +185,13 @@ public class Get extends RetrieveDataCommand {
 			System.out.println("directories were created successfully");
 		else
 			System.out.println("failed trying to create the directories");
-
 	}
-	 public static int nthOccurrence(String str, String c, int n) {
-		 n-=1;
-		    int pos = str.indexOf(c, 0);
-		    while (n-- > 0 && pos != -1)
-		        pos = str.indexOf(c, pos+1);
-		    return pos;
-		}
+
+	public static int nthOccurrence(String str, String c, int n) {
+		n-=1;
+		int pos = str.indexOf(c, 0);
+		while (n-- > 0 && pos != -1)
+			pos = str.indexOf(c, pos+1);
+		return pos;
+	}
 }

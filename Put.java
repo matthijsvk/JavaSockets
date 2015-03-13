@@ -8,7 +8,6 @@ public class Put extends Command {
 			String command, DataOutputStream outToServer,
 			BufferedInputStream inFromServer) {
 		super(shortHost, hostExtension, HTTPVersion, command, outToServer, inFromServer);
-		// TODO Auto-generated constructor stub
 	}
 
 }

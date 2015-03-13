@@ -9,7 +9,7 @@ public class Head extends RetrieveDataCommand {
 			String command,DataOutputStream outToServer,BufferedInputStream inFromServer) {
 		super(shortHost, hostExtension, HTTPVersion, command, outToServer, inFromServer);
 	}
-	
+
 	public void execute() throws IOException{
 		super.execute();
 	}
