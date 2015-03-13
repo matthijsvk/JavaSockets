@@ -9,3 +9,9 @@
 /.gitignore
 /.classpath
 /.project
+/Command.class
+/Get.class
+/Head.class
+/Post.class
+/Put.class
+/RetrieveDataCommand.class

@@ -8,7 +8,7 @@ import java.net.*;
  * Computer Networks, KU Leuven.
  *
  */
-class TCPServer
+public class TCPServer
   {
 
   /*
