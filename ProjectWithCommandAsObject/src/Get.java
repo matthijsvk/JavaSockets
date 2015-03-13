@@ -34,7 +34,7 @@ private void pullEntity() throws IOException {
 	// Read data from the server and write it to the screen.
 	int dataInFromServer = 0;
 	int counter = length;
-	while (dataInFromServer != -1){
+	while (counter != 0){
 		dataInFromServer = inFromServer.read();
 	    binWriter.write(dataInFromServer);
 	    counter -= 1;

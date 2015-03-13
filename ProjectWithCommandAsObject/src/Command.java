@@ -24,7 +24,7 @@ public abstract class Command {
 	
 	
 	public void execute() throws IOException{
-		System.out.println(outToServer);
+		System.out.println(toBeSent);
 		outToServer.writeBytes(toBeSent);
 	}
 	
@@ -39,7 +39,7 @@ public abstract class Command {
         }
     else if (HTTPVersion.equals("1.1")){
     	System.out.println("1.1 entered");
-    toBeSent = command + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
+    toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
     }
     else{
     	//throw error
