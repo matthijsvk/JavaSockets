@@ -50,10 +50,10 @@
 				query = new Post(shortHost, hostExtension, args[3], command, outToServer, inFromServer);
 		}
 		if(command.equals("PUT")){
-				query = new Put(command, command, command, command, outToServer, inFromServer);
+				query = new Put(shortHost,hostExtension, args[3],command, outToServer,inFromServer);
 		}
 		if(command.equals("HEAD")){
-				query = new Put(command, command, command, command, outToServer, inFromServer);
+				query = new Head(shortHost,hostExtension, args[3],command, outToServer,inFromServer);
 		}
 		
 		query.execute();
