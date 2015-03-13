@@ -3,12 +3,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 
-public class Command {
+public abstract class Command {
 
-	private String shortHost;
-	private String HTTPVersion;
-	private String hostExtension;
-	private String query;
+	protected String shortHost;
+	protected String HTTPVersion;
+	protected String hostExtension;
+	protected String toBeSent;
 	protected DataOutputStream outToServer;
 	protected BufferedInputStream inFromServer;
 	
@@ -18,23 +18,34 @@ public class Command {
 		this.hostExtension = hostExtension;
 		this.outToServer = outToServer;
 		this.inFromServer = inFromServer;
-		
-		
-		if (HTTPVersion.equals("1.0")){
-	    	System.out.println("1.0 entered");
-	        query = command + " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n";
-	        System.out.println(command +  " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n");
-	        }
-	    else if (HTTPVersion.equals("1.1")){
-	    	System.out.println("1.1 entered");
-	    query = command + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
-	    }
-	    else{
-	    	//throw error
-	    }
+		createDataToBeSent(command);
 	}
 	
+	
+	
 	public void execute() throws IOException{
-		outToServer.writeBytes(query);
+		System.out.println(outToServer);
+		outToServer.writeBytes(toBeSent);
 	}
+	
+	
+	
+	
+	public void createDataToBeSent(String command){
+	if (HTTPVersion.equals("1.0")){
+    	System.out.println("1.0 entered");
+        toBeSent = command + " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n";
+        System.out.println(command +  " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n");
+        }
+    else if (HTTPVersion.equals("1.1")){
+    	System.out.println("1.1 entered");
+    toBeSent = command + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
+    }
+    else{
+    	//throw error
+    }
+	}
+	
+	
+	
 }
