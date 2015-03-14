@@ -21,8 +21,10 @@ public class GetRespond extends SendDataRespond{
 	}
 
 	private void sendEntity() throws IOException {
-		Path path = Paths.get("homepage.html");
+		Path path = Paths.get("server","homepage.html");
 		byte[] data = Files.readAllBytes(path);
+		String str = new String(data, "UTF-8");
+		System.out.println(str);
 		outToClient.write(data);
 	}
 

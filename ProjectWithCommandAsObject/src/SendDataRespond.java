@@ -20,8 +20,10 @@ public class SendDataRespond extends Respond {
 	}
 
 	private void sendHeader() throws IOException {
-			Path path = Paths.get("header.txt");
+			Path path = Paths.get("server","header.txt");
 			byte[] data = Files.readAllBytes(path);
+			String str = new String(data, "UTF-8");
+			System.out.println(str);
 			outToClient.write(data);
 	}
 

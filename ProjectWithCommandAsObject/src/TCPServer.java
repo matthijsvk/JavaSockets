@@ -20,7 +20,7 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 		// Create server (incoming) socket on port 6789.
-		ServerSocket welcomeSocket = new ServerSocket(6794);
+		ServerSocket welcomeSocket = new ServerSocket(7000);
 
 		// Wait for a connection to be made to the server socket. 
 		while(true)
@@ -58,33 +58,22 @@ public class TCPServer
 					b = a; a = inputFromClient;
 				}
 			}
-			System.out.print(request);
-			boolean commandFound = false;
-			int counter = 0;
-			while (!commandFound){
-				if (request.substring(counter, counter+1).equals(" ")){
-					System.out.println("we got here brah");
-					commandFound = true;
-				counter += 1;
-				}
-			}
-			System.out.println(counter);
-			String command = request.substring(0, counter);
-			System.out.println(command);
+			
 			Respond query = null;
-			if(command.equals("GET")){
+			if(request.substring(0, 3).equals("GET")){
 				query = new GetRespond(request, outToClient, inFromClient);
 			}
-			if(command.equals("POST")){
+			System.out.println(query);
+			if(request.substring(0, 4).equals("POST")){
 				query = new PostRespond(request, outToClient, inFromClient);
 			}
-			if(command.equals("PUT")){
+			if(request.substring(0, 3).equals("PUT")){
 				query = new PutRespond(request, outToClient, inFromClient);
 			}
-			if(command.equals("HEAD")){
+			if(request.substring(0, 4).equals("HEAD")){
 				query = new HeadRespond(request, outToClient, inFromClient);
 			}
-
+			
 			query.execute();
 			
 		}
