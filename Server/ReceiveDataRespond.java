@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class ReceiveDataRespond extends Respond {
 
-	public ReceiveDataRespond(String request, DataOutputStream outToClient,
+	public ReceiveDataRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 		// TODO Auto-generated constructor stub

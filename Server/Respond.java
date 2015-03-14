@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public abstract class Respond {
 	
-	protected String request;
+	protected String[] request;
 	protected DataOutputStream outToClient;
 	protected BufferedInputStream inFromClient;
 	protected String command;
@@ -16,7 +16,7 @@ public abstract class Respond {
 	protected String hostExtension;
 	protected int port;
 
-	public Respond(String request, DataOutputStream outToClient, BufferedInputStream inFromClient, int port) throws IOException {
+	public Respond(String[] request, DataOutputStream outToClient, BufferedInputStream inFromClient, int port) throws IOException {
 		this.request = request;
 		this.inFromClient = inFromClient;
 		this.outToClient = outToClient;
@@ -27,45 +27,26 @@ public abstract class Respond {
 	
 	//TODO: bij alles eigenlijk is geen rekening gehouden met 1.1 of 1.0
 	private void checkForHostLineIf11() throws IOException {
-		if(httpVersion.equals("1.1")){
-			int a = 0;int b = 0;
-			boolean requestExtensionEnded = false;
-			String requestExtension = "";
-			int inputFromClient = inFromClient.read();
-			while (inputFromClient != -1 && !requestExtensionEnded){
-				if (a == 10 && b == 13){
-					requestExtensionEnded = true;
-				}
-				if (!requestExtensionEnded){
-					requestExtension = requestExtension +(char)inputFromClient;
-					inputFromClient = inFromClient.read();
-					b = a; a = inputFromClient;
-				}
+		if(httpVersion.equals("1.1") && !request[1].equals("Host: localhost:" + Integer.toString(port) +"\r\n")){
+				System.out.println("ERROR: HTTP 1.1 requested and no host line extension!");
 			}
-			if(!requestExtension.equals("Host: localhost:" + Integer.toString(port))){
-				//TODO Throw exception
-			}
-		}
 		}
 
 	
 	
 	private void parseRequest() {
 		int counter = 0;
-		while(!request.substring(counter, counter+1).equals(" ")){
+		while(!request[0].substring(counter, counter+1).equals(" ")){
 			counter +=1;
 		}
-		command = request.substring(0, counter);
-		System.out.println(command);
-		String remainingPartOfRequest = request.substring(counter +1);
+		command = request[0].substring(0, counter);
+		String remainingPartOfRequest = request[0].substring(counter +1);
 		counter = 0;
 		while(!remainingPartOfRequest.substring(counter, counter+1).equals(" ")){
 			counter +=1;
 		}
 		host = remainingPartOfRequest.substring(0, counter);
-		System.out.println(host);
 		remainingPartOfRequest = remainingPartOfRequest.substring(counter +1);
-		System.out.println(remainingPartOfRequest);
 		httpVersion = remainingPartOfRequest.substring(5, 8);
 		System.out.println(httpVersion);
 		
@@ -84,7 +65,7 @@ public abstract class Respond {
 		}
 		}
 		else{
-			shortHost= "www.tcpipguide.com";
+			shortHost= "www.linux-ip.net";
 			hostExtension= host;
 		}
 	}

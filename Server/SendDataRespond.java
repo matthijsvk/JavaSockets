@@ -15,7 +15,7 @@ public class SendDataRespond extends Respond {
 
 
 
-	public SendDataRespond(String request, DataOutputStream outToClient,
+	public SendDataRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 	}
@@ -31,7 +31,7 @@ public class SendDataRespond extends Respond {
 			byte[] data = Files.readAllBytes(path);
 			Date date = new Date();
 			// TODO: status updates moeten nog goed 
-			header += "HTTP/1.1 200 Found";
+			header += "HTTP/1.1 200 OK\r\n";
 			// TODO: geen idee of die datum ok is
 			header += "Date: " + date.toString() + "\r\n";
 			String extension = getExtensionFromPath(pathAsString);
@@ -44,14 +44,15 @@ public class SendDataRespond extends Respond {
 			}
 			header += "Content-Length: " + Integer.toString(data.length) + "\r\n\r\n";
 			outToClient.writeBytes(header);
+			System.out.println(header);
 	}
 	
 	
 	
 	private String getExtensionFromPath(String pathAsString) {
 		int counter = pathAsString.length();
-		while(pathAsString.substring(counter-1, counter).equals(".")){
-			counter = -1;
+		while(!pathAsString.substring(counter-1, counter).equals(".")){
+			counter += -1;
 		}
 		return pathAsString.substring(counter);
 	}
