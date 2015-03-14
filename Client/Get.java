@@ -22,6 +22,9 @@ public class Get extends RetrieveDataCommand {
 		super(shortHost,hostExtension,HTTPVersion, command, clientSocket);
 	}
 
+	/**
+	 * This function executes the needed commands to GET a file or webpage.
+	 */
 	public void execute() throws IOException{
 
 		super.execute();
@@ -33,38 +36,27 @@ public class Get extends RetrieveDataCommand {
 		}
 	}
 
+	/**
+	 * This function reads data from the server and interprets it. If it is a website (html), it is parsed and all embedded images are GET'ed too.
+	 * 																If if is another file, it is downloaded and saved to the appropriate location on the local system
+	 * @throws IOException
+	 */
 	private void pullEntity() throws IOException {
 
 		System.out.println("creating DIR structures...");	//TODO
 		
-		String URL;
-		String[] results; String path; String name;
-		if (!this.hostExtension.equals("/")){		//file, not homepage
-			URL = this.shortHost + this.hostExtension;
-			
-			System.out.println(URL);
-			
-			results = getNamePath(URL, this.shortHost);
-			path = results[0]; name = results[1];
-			
-			System.out.println(path+" "+name);
-			createDirStructure(path,name);
-		}
-		else{		//homepage, no directory needed
-			// improving the filename
-			name = this.shortHost.replace("www.","");int puntIndex=name.indexOf(".");name = name.substring(0, puntIndex);
-			path=name+".html";
-		}
-
-		// make file to write to
+		String path; 
+		path = getPath(this.shortHost, this.hostExtension);
+		createDirStructure(path);
+		
+		// create file to write to
 		FileOutputStream binWriter = new FileOutputStream(path);
 
 		// Read data from the server and write it to the screen.
-
 		System.out.println("starting getting "+this.extension+ " type file");	//TODO
 		
 		int dataInFromServer = 0; 			//bytes you receive
-		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){
+		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){	//sometimes, the extension in the header and in the filename are not the same. if in doubt, assume it is a normal file
 			
 			System.out.println("##### HTML file ######");
 			
@@ -85,18 +77,17 @@ public class Get extends RetrieveDataCommand {
 			// Iterate
 			if (images.size() > 0){
 				for (Element el : images) {
-					String imageURL = el.attr("src");
-					if (!imageURL.contains(shortHost)){
-				    	imageURL = shortHost + "/" + imageURL;
-				    }
-					results = getNamePath(imageURL, this.shortHost);
-					String imagePath = results[0]; //String imageName = results[1];
+					String imageURL = el.attr("src");			// some images are relative (/images/image.jpg), some are absolute (http://www.test.com/images/image.jpg)
+					imageURL = imageURL.replace("http://","");	// remove the absolute adressing stuff
+					String imageExtension = imageURL.replace(shortHost, "");
+					if (imageExtension.indexOf("/") != 0)				//add leading slash if not exists
+						imageExtension = "/" + imageExtension;
 					
-					System.out.println("getting image: "+imageURL); //TODO
+					System.out.println("getting image: "+imageExtension); //TODO
 
 					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
 					//try{
-						Command query = new Get(this.shortHost,"/"+imagePath,this.HTTPVersion, "GET", clientSocket);
+						Command query = new Get(this.shortHost,imageExtension,this.HTTPVersion, "GET", clientSocket);
 						query.execute();
 					//}
 					//catch (Exception e){System.out.println(e);}
@@ -120,6 +111,9 @@ public class Get extends RetrieveDataCommand {
 		binWriter.close();
 	}
 
+	/**
+	 * This function parses the header you received from the server and stores the file extension and the length of the file GOT
+	 */
 	private void parseHeader() {
 
 		//Parse for file extension
@@ -168,77 +162,81 @@ public class Get extends RetrieveDataCommand {
 		}
 	}
 
-	public String[] getNamePath(String URL, String shortHost){
-		if (!URL.contains(shortHost)){
-			URL = shortHost + "/" + URL;
-		}
+	/**
+	 * this function returns the path to a file. If the file is a website (www.test.com), is is stored in test/test.html
+	 * 											 If the file is a normal file (www.test.com/dir/file), it is stored in test/dir/file
+	 * @param shortHost
+	 * @param hostExtension
+	 * @return
+	 */
+	public String getPath(String shortHost, String hostExtension){
+		String path;
+		String hostDirName = this.shortHost.replace("www.","");int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
 
-		// get PATH this image, so without http etc
-		String path; String name;
-		path = URL.replace("http://","");				//filter out "http://" chars if they exist
-		if (path.equals(shortHost)){			//if you're requesting 'www.test.com'
-			// path = shortHost
-			name = shortHost;
+		if (hostExtension.equals("/")){							//if you're requesting 'www.test.com' or 'www.test.com/',
+			path = hostDirName+ "/" + hostDirName + ".html";	// it is stored under 'test/test.html'
 		}
 		else{
-			path = path.replace(shortHost, "");				//get rid of hostname
-			if (path.indexOf("/") == 0)						//get rid of leading slash if exists
-				path = path.substring(1, path.length());
-
-			System.out.println(path);
-			
-			// get IMAGE NAME itself by removing directory names
-			if (path.contains("/")){	// file is stored in a dir
-				name = path.substring(path.indexOf("/"), path.length()); //first directory doesn't have a leading slash
-				while (name.contains("/")){
-					name= name.substring(name.indexOf("/")+1, name.length());
-				}
-			}
-			else{	// not stored in dir, but immediately under host
-				name = path; 
-			}
+			if (hostExtension.indexOf("/") == 0)	//for normal files
+				path = hostDirName + hostExtension;
+			else
+				path= hostDirName + "/" + "somethingWentWrong.error";
 		}
-		String[] results = new String[] {path, name};
-		return results;
+		return path;
 	}
 
+
 	/**
-	 * this function creates the directories to which the image will be saved
+	 * this function creates the directory structure so that files can be saved to the location specified in their path
 	 * @param path
 	 * @param name
 	 */
-	public void createDirStructure(String path, String name){
-		// sometimes image url's don't include the "http://shortHost/" part
+	public void createDirStructure(String path){
 
 		// get the DIRECTORY TREE and create it locally : imagePath - imageName
-		if (name.equals(path)){}
-		else{
+		String name = getFileName(path);
+		String dirNames = path.replace(name,"");	
+		
+		// remove trailing slash
+		dirNames = dirNames.substring(0, dirNames.length()-1); 	
 
-			String dirNames = path.replace(name,"");		
-			dirNames = dirNames.substring(0, dirNames.length()-1); 	// remove trailing slash
+		//System.out.println("DIRNAMES: "+ dirNames);
 
-			//System.out.println("DIRNAMES: "+ dirNames);
-			//String hostDirName = this.shortHost.replace("www.","");int puntIndex=name.indexOf(".");name = name.substring(0, puntIndex);
-			//dirNames = hostDirName + "/" + dirNames ;
-
-			File dir = new File("./" + dirNames);
-			// create directory structureFile
-			boolean successful = dir.mkdirs();
-			//		if (successful)
-			//			System.out.println("directories were created successfully");
-			//		else
-			//			System.out.println("failed trying to create the directories");
-		}
-	}
-
-	public static int nthOccurrence(String str, String c, int n) {
-		n-=1;
-		int pos = str.indexOf(c, 0);
-		while (n-- > 0 && pos != -1)
-			pos = str.indexOf(c, pos+1);
-		return pos;
+		// create directory structure
+		File dir = new File("./" + dirNames);
+		boolean successful = dir.mkdirs();
+				if (successful)
+					System.out.println("directories were created successfully");
+				else
+					System.out.println("failed trying to create the directories");
 	}
 	
+
+	/**
+	 * this function gets the name of a file based on its path. Basically, this returns all the chars before the last slash
+	 * @param path
+	 * @return
+	 */
+	public String getFileName(String path){
+		String name;
+		// get IMAGE NAME itself by removing directory names
+		if (path.contains("/")){	// file is stored in a dir
+			name = path.substring(path.indexOf("/"), path.length()); //first directory doesn't have a leading slash
+			while (name.contains("/")){
+				name= name.substring(name.indexOf("/")+1, name.length());
+			}
+		}
+		else{	// not stored in dir, but immediately under host
+			name = path; 
+		}
+		return name;
+	}
+
+	/**
+	 * this function returns the file extension of a file based on its path (filename works too). Basically, it returns all the chars before the last "."
+	 * @param path
+	 * @return
+	 */
 	public static String getExtensionFromPath(String path){
 		// get file EXTENSION (loop in reverse over chars until '.' found
 		int placeInUrl = path.length() -1;
