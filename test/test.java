@@ -2,10 +2,7 @@ package test;
 
 public class test {
 public static void main(String[] args) {
-	String lastEight= "abcdefg";
-	char nextChar = 'p'; 
-	lastEight = lastEight.substring(1, lastEight.length()) + nextChar;
-	System.out.println(lastEight);
+	//String a = "<a target="_blank" href="http://junefiredtp.ca">Junefire DTP</a>";
 }
 	
 

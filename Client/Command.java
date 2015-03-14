@@ -12,6 +12,8 @@ public abstract class Command {
 	protected String shortHost;
 	protected String HTTPVersion;
 	protected String hostExtension;
+	protected String command;
+	
 	protected String toBeSent;
 	protected DataOutputStream outToServer;
 	protected BufferedInputStream inFromServer;
@@ -22,7 +24,7 @@ public abstract class Command {
 		this.shortHost = shortHost;
 		this.hostExtension = hostExtension;
 		this.HTTPVersion = HTTPVersion;
-		createDataToBeSent(command);
+		this.command = command;
 		
 		if (this.HTTPVersion.equals("1.0")){
 			this.clientSocket = new Socket(shortHost, 80);//clientSocket; 	// new connection for each file
@@ -43,13 +45,14 @@ public abstract class Command {
 	}
 
 	public void execute() throws IOException{
+		createDataToBeSent(command);
 		outToServer.writeBytes(toBeSent);
 	}
 
 	public void createDataToBeSent(String command){
+		
 		if (HTTPVersion.equals("1.0")){
 			toBeSent = command + " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n";
-			System.out.println(command +  " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n");
 		}
 		else if (HTTPVersion.equals("1.1")){
 			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
@@ -58,8 +61,7 @@ public abstract class Command {
 			//throw error
 		}
 		
-		System.out.println("TO BE SENT: "+toBeSent);
-		System.out.println("END TO BE SENT");
+		//System.out.println("TO BE SENT: "+toBeSent);
 	}
 	
 	public void terminate() throws IOException{
