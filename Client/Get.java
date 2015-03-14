@@ -32,7 +32,7 @@ public class Get extends RetrieveDataCommand {
 		this.pullEntity();
 		if (this.HTTPVersion.equals("1.0")){
 			this.terminate();	// terminate the connection created by this Command
-								//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
+			//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
 		}
 	}
 
@@ -43,23 +43,21 @@ public class Get extends RetrieveDataCommand {
 	 */
 	private void pullEntity() throws IOException {
 
-		System.out.println("creating DIR structures...");	//TODO
-		
+		// creating DIR structures
 		String path; 
 		path = getPath(this.shortHost, this.hostExtension);
 		createDirStructure(path);
-		
+
 		// create file to write to
 		FileOutputStream binWriter = new FileOutputStream(path);
 
-		// Read data from the server and write it to the screen.
+		// Read data from the server
 		System.out.println("starting getting "+this.extension+ " type file");	//TODO
-		
+
 		int dataInFromServer = 0; 			//bytes you receive
-		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){	//sometimes, the extension in the header and in the filename are not the same. if in doubt, assume it is a normal file
-			
-			System.out.println("##### HTML file ######");
-			
+		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){	// if html, you have to pare it and GET all embedded images	
+			//sometimes, the extension in the header and in the filename are not the same. if in doubt, assume it is a normal file
+
 			String htmlFromServer = ""; 	//get the html to be parsed
 			int nbBytesRead = 0;			// needed for HTML 1.1 b/c persisten connection: http://stackoverflow.com/questions/183409/http-1-1-persistent-connections-using-sockets-in-java
 			while ( (nbBytesRead < this.length) && (dataInFromServer != -1) ){
@@ -71,43 +69,64 @@ public class Get extends RetrieveDataCommand {
 
 			//System.out.println("PARSING..."); //TODO remove debug
 			//System.out.println(htmlFromServer);
+
 			Document parsed = Jsoup.parse(htmlFromServer);
 
+			// get all images from the parsed document
 			Elements images = parsed.select("img[src~=(?i)\\.(png|jpe?g|gif)]");  
-			// Iterate
+			Elements links = parsed.select("a[href]");
+
+			if (links.size() > 0){
+				for (Element link : links) {						// iterate, we've gotta GET them all!!		
+					String URL = link.attr("href");
+					URL = URL.replace("http://","");	// remove the absolute adressing stuff
+
+					String[] results = parseShort_ExtensionURL(URL);
+					String shortURL = results[0]; String URLExtension = results[1];
+
+
+					// try catch to not crash on 404 not found
+					try{
+						System.out.println("getting URL: "+URLExtension); //TODO
+						Command query = new Get(shortURL,URLExtension,this.HTTPVersion, "GET", clientSocket);
+						query.execute();
+					}
+					catch (Exception e){;}
+				}
+			}
+
+
 			if (images.size() > 0){
-				for (Element el : images) {
+				for (Element el : images) {						// iterate, we've gotta GET them all!!
 					String imageURL = el.attr("src");			// some images are relative (/images/image.jpg), some are absolute (http://www.test.com/images/image.jpg)
 					imageURL = imageURL.replace("http://","");	// remove the absolute adressing stuff
 					String imageExtension = imageURL.replace(shortHost, "");
-					if (imageExtension.indexOf("/") != 0)				//add leading slash if not exists
+					if (imageExtension.indexOf("/") != 0)		//add leading slash if not exists
 						imageExtension = "/" + imageExtension;
-					
-					System.out.println("getting image: "+imageExtension); //TODO
 
-					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
-					//try{
+					// try catch to not crash on 404 not found
+					try{
+						System.out.println("getting image: "+imageExtension); //TODO
 						Command query = new Get(this.shortHost,imageExtension,this.HTTPVersion, "GET", clientSocket);
 						query.execute();
-					//}
-					//catch (Exception e){System.out.println(e);}
+					}
+					catch (Exception e){;}
 				}
 			}
 		}
-		else {
-			System.out.println("#####  not HTML file ######");
-			int nbBytesRead = 0;			// needed for HTML 1.1 b/c persisten connection: http://stackoverflow.com/questions/183409/http-1-1-persistent-connections-using-sockets-in-java
+		else { //normal file (leaf)
+			int nbBytesRead = 0;			// needed for HTML 1.1 b/c persistent connection: http://stackoverflow.com/questions/183409/http-1-1-persistent-connections-using-sockets-in-java
 			while ((nbBytesRead < this.length) && (dataInFromServer != -1) ){
 				dataInFromServer = inFromServer.read();
 				binWriter.write(dataInFromServer);
 				nbBytesRead += 1;
 			}
 		}
-		
+
 		System.out.println("GOT the file " + path);
-		System.out.println("-------------------------------------------------");System.out.println();
+		System.out.println("-------------------------------------------------");
 		//close the stream to text file
-		
+
 		binWriter.close();
 	}
 
@@ -161,6 +180,32 @@ public class Get extends RetrieveDataCommand {
 			length = -1;
 		}
 	}
+	
+	
+	public String[] parseShort_ExtensionURL(String URL){
+		//for files on a different web server
+		String shortURL; String URLExtension;
+		if (URL.contains("www.")){	
+			if (URL.contains("/")){
+				shortURL = URL.substring(0, URL.indexOf("/"));
+				URLExtension = URL.substring(URL.indexOf("/"), URL.length());
+			}
+			else{
+				shortURL = URL;
+				URLExtension = "/";
+			}
+		}
+		else{
+			shortURL = shortHost;
+			URLExtension = "/"+URL;
+		}
+
+		//add leading slash if not exists
+		if (URLExtension.indexOf("/") != 0)		
+			URLExtension = "/" + URLExtension;
+		
+		return new String[] {shortURL, URLExtension};
+	}
 
 	/**
 	 * this function returns the path to a file. If the file is a website (www.test.com), is is stored in test/test.html
@@ -196,7 +241,7 @@ public class Get extends RetrieveDataCommand {
 		// get the DIRECTORY TREE and create it locally : imagePath - imageName
 		String name = getFileName(path);
 		String dirNames = path.replace(name,"");	
-		
+
 		// remove trailing slash
 		dirNames = dirNames.substring(0, dirNames.length()-1); 	
 
@@ -205,12 +250,12 @@ public class Get extends RetrieveDataCommand {
 		// create directory structure
 		File dir = new File("./" + dirNames);
 		boolean successful = dir.mkdirs();
-				if (successful)
-					System.out.println("directories were created successfully");
-				else
-					System.out.println("failed trying to create the directories");
+//		if (successful)
+//			System.out.println("directories were created successfully");
+//		else
+//			System.out.println("failed trying to create the directories");
 	}
-	
+
 
 	/**
 	 * this function gets the name of a file based on its path. Basically, this returns all the chars before the last slash

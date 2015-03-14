@@ -49,7 +49,6 @@ public abstract class Command {
 	public void createDataToBeSent(String command){
 		if (HTTPVersion.equals("1.0")){
 			toBeSent = command + " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n";
-			System.out.println(command +  " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n");
 		}
 		else if (HTTPVersion.equals("1.1")){
 			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
@@ -59,7 +58,6 @@ public abstract class Command {
 		}
 		
 		System.out.println("TO BE SENT: "+toBeSent);
-		System.out.println("END TO BE SENT");
 	}
 	
 	public void terminate() throws IOException{
