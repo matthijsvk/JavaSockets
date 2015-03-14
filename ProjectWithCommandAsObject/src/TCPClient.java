@@ -11,7 +11,7 @@ import java.net.*;
  */
 public class TCPClient {
 
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception{  // args[] = [command, host, port, HTTPVersion]
 		String host = args[1];
 		String shortHost; // only www.abc.def
 		String hostExtension; // everything after the shorthost

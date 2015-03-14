@@ -20,12 +20,18 @@ public abstract class Command {
 
 	public Command(String shortHost,String hostExtension, String HTTPVersion, String command, Socket clientSocket) throws UnknownHostException, IOException{
 		this.shortHost = shortHost;
-		this.HTTPVersion = HTTPVersion;
 		this.hostExtension = hostExtension;
+		this.HTTPVersion = HTTPVersion;
 		createDataToBeSent(command);
 		
-		this.clientSocket = new Socket(shortHost, 80);//clientSocket; //  TODO when you make a new Socket here, it works, but like HTTP 1.0 (new connection for each file, Slow Start,...)
-																	  // if you make a new socket here, you have to call terminate() at the end of GET.execute()
+		if (this.HTTPVersion.equals("1.0")){
+			this.clientSocket = new Socket(shortHost, 80);//clientSocket; 	// new connection for each file
+																	  		// if you use HTTP 1.0, you have to call terminate() at the end of subclass execute() methods
+		}
+		else if (this.HTTPVersion.equals("1.1")){
+			this.clientSocket = clientSocket;			//use persisent connection created in TCPClient
+		}
+		
 		// Create new outputstream (convenient data writer) to this host. 
 		DataOutputStream outToServer = new DataOutputStream(this.clientSocket.getOutputStream());
 

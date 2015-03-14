@@ -27,7 +27,10 @@ public class Get extends RetrieveDataCommand {
 		super.execute();
 		this.parseHeader();
 		this.pullEntity();
-		this.terminate();	//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
+		if (this.HTTPVersion.equals("1.0")){
+			this.terminate();	// terminate the connection created by this Command
+								//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
+		}
 	}
 
 	private void pullEntity() throws IOException {
@@ -38,8 +41,13 @@ public class Get extends RetrieveDataCommand {
 		String[] results; String path; String name;
 		if (!this.hostExtension.equals("/")){		//file, not homepage
 			URL = this.shortHost + this.hostExtension;
+			
+			System.out.println(URL);
+			
 			results = getNamePath(URL, this.shortHost);
 			path = results[0]; name = results[1];
+			
+			System.out.println(path+" "+name);
 			createDirStructure(path,name);
 		}
 		else{		//homepage, no directory needed
@@ -52,23 +60,24 @@ public class Get extends RetrieveDataCommand {
 
 		// Read data from the server and write it to the screen.
 
-		System.out.println("starting getting data...");	//TODO
-		System.out.println("file extension:" + this.extension);
+		System.out.println("starting getting "+this.extension+ " type file");	//TODO
 		
 		int dataInFromServer = 0; 			//bytes you receive
-		if (extension.equals("html")){
+		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){
 			
-			System.out.println(" HTML file ######");
+			System.out.println("##### HTML file ######");
 			
 			String htmlFromServer = ""; 	//get the html to be parsed
-			while (dataInFromServer != -1){
+			int nbBytesRead = 0;			// needed for HTML 1.1 b/c persisten connection: http://stackoverflow.com/questions/183409/http-1-1-persistent-connections-using-sockets-in-java
+			while ( (nbBytesRead < this.length) && (dataInFromServer != -1) ){
 				dataInFromServer = inFromServer.read();
 				htmlFromServer = htmlFromServer + (char)dataInFromServer;
 				binWriter.write(dataInFromServer);
+				nbBytesRead += 1;
 			}
 
-			System.out.println("PARSING..."); //TODO remove debug
-			System.out.println(htmlFromServer);
+			//System.out.println("PARSING..."); //TODO remove debug
+			//System.out.println(htmlFromServer);
 			Document parsed = Jsoup.parse(htmlFromServer);
 
 			Elements images = parsed.select("img[src~=(?i)\\.(png|jpe?g|gif)]");  
@@ -85,20 +94,26 @@ public class Get extends RetrieveDataCommand {
 					System.out.println("getting image: "+imageURL); //TODO
 
 					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
-					Command query = new Get(this.shortHost,"/"+imagePath,this.HTTPVersion, "GET", clientSocket);
-					query.execute();
+					//try{
+						Command query = new Get(this.shortHost,"/"+imagePath,this.HTTPVersion, "GET", clientSocket);
+						query.execute();
+					//}
+					//catch (Exception e){System.out.println(e);}
 				}
 			}
 		}
 		else {
 			System.out.println("#####  not HTML file ######");
-			while (dataInFromServer != -1){
+			int nbBytesRead = 0;			// needed for HTML 1.1 b/c persisten connection: http://stackoverflow.com/questions/183409/http-1-1-persistent-connections-using-sockets-in-java
+			while ((nbBytesRead < this.length) && (dataInFromServer != -1) ){
 				dataInFromServer = inFromServer.read();
 				binWriter.write(dataInFromServer);
+				nbBytesRead += 1;
 			}
 		}
 		
 		System.out.println("GOT the file " + path);
+		System.out.println("-------------------------------------------------");System.out.println();
 		//close the stream to text file
 		
 		binWriter.close();
@@ -169,8 +184,8 @@ public class Get extends RetrieveDataCommand {
 			if (path.indexOf("/") == 0)						//get rid of leading slash if exists
 				path = path.substring(1, path.length());
 
-			System.out.println("path: " + path); 			//TODO remove debug
-
+			System.out.println(path);
+			
 			// get IMAGE NAME itself by removing directory names
 			if (path.contains("/")){	// file is stored in a dir
 				name = path.substring(path.indexOf("/"), path.length()); //first directory doesn't have a leading slash
@@ -195,18 +210,22 @@ public class Get extends RetrieveDataCommand {
 		// sometimes image url's don't include the "http://shortHost/" part
 
 		// get the DIRECTORY TREE and create it locally : imagePath - imageName
-		String dirNames = path.replace(name,"");		
-		dirNames = dirNames.substring(0, dirNames.length()-1); 	// remove trailing slash
+		if (name.equals(path)){}
+		else{
 
-		System.out.println("DIRNAMES: "+ dirNames);
+			String dirNames = path.replace(name,"");		
+			dirNames = dirNames.substring(0, dirNames.length()-1); 	// remove trailing slash
 
-		File dir = new File("./" + dirNames);
-		// create directory structureFile
-		boolean successful = dir.mkdirs();
-		if (successful)
-			System.out.println("directories were created successfully");
-		else
-			System.out.println("failed trying to create the directories");
+			//System.out.println("DIRNAMES: "+ dirNames);
+
+			File dir = new File("./" + dirNames);
+			// create directory structureFile
+			boolean successful = dir.mkdirs();
+			//		if (successful)
+			//			System.out.println("directories were created successfully");
+			//		else
+			//			System.out.println("failed trying to create the directories");
+		}
 	}
 
 	public static int nthOccurrence(String str, String c, int n) {
@@ -215,5 +234,18 @@ public class Get extends RetrieveDataCommand {
 		while (n-- > 0 && pos != -1)
 			pos = str.indexOf(c, pos+1);
 		return pos;
+	}
+	
+	public static String getExtensionFromPath(String path){
+		// get file EXTENSION (loop in reverse over chars until '.' found
+		int placeInUrl = path.length() -1;
+		String extension = ".html";
+		while (path.charAt(placeInUrl) != ("/").charAt(0) && extension == ".html"){
+			if (path.charAt(placeInUrl) == (".").charAt(0)){
+				extension = path.substring(placeInUrl);
+			}
+			placeInUrl = placeInUrl -1;
+		}
+		return extension;
 	}
 }

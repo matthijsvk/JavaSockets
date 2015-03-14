@@ -14,6 +14,10 @@ public class Head extends RetrieveDataCommand {
 
 	public void execute() throws IOException{
 		super.execute();
+		if (this.HTTPVersion.equals("1.0")){
+			this.terminate();	// terminate the connection created by this Command
+								//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
+		}
 	}
 
 }
