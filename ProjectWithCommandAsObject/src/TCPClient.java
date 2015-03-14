@@ -1,3 +1,5 @@
+package ProjectWithCommandAsObject.src;
+
 
 // Import necessary IO and NETwork libraries
 import java.io.*;

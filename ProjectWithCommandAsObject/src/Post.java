@@ -1,3 +1,5 @@
+package ProjectWithCommandAsObject.src;
+
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 

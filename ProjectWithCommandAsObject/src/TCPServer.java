@@ -1,3 +1,5 @@
+package ProjectWithCommandAsObject.src;
+
 //Import necessary IO and NETwork libraries
 import java.io.*;
 import java.net.*;
@@ -37,6 +39,7 @@ public class TCPServer
 			outToClient.writeBytes(capsSentence);
 			System.out.println("Sent: "+ capsSentence);
 		}
+		//welcomeSocket.close();  //never reached because the server has to stay online to accept clients
 
 	} // End of main method.
 

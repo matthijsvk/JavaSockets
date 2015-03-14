@@ -1,3 +1,5 @@
+package ProjectWithCommandAsObject.src;
+
 
 
 import java.io.BufferedInputStream;
@@ -31,6 +33,8 @@ public class Get extends RetrieveDataCommand {
 
 	private void pullEntity() throws IOException {
 
+		System.out.println("creating DIR structures...");	//TODO
+		
 		String URL;
 		String[] results; String path; String name;
 		if (!this.hostExtension.equals("/")){		//file, not homepage
@@ -49,17 +53,22 @@ public class Get extends RetrieveDataCommand {
 
 		// Read data from the server and write it to the screen.
 
+		System.out.println("starting getting data...");	//TODO
+		System.out.println("file extension:" + this.extension);
+		
 		int dataInFromServer = 0; 			//bytes you receive
-		if (extension == "html"){
+		if (extension.equals("html")){
+			
+			System.out.println(" HTML file ######");
+			
 			String htmlFromServer = ""; 	//get the html to be parsed
 			while (dataInFromServer != -1){
 				dataInFromServer = inFromServer.read();
-				if (extension == "html")
-					htmlFromServer = htmlFromServer + (char)dataInFromServer;
+				htmlFromServer = htmlFromServer + (char)dataInFromServer;
 				binWriter.write(dataInFromServer);
 			}
 
-			System.out.println("PARSING....."); //TODO remove debug
+			System.out.println("PARSING..."); //TODO remove debug
 			System.out.println(htmlFromServer);
 			Document parsed = Jsoup.parse(htmlFromServer);
 
@@ -67,9 +76,14 @@ public class Get extends RetrieveDataCommand {
 			// Iterate
 			if (images.size() > 0){
 				for (Element el : images) {
-					String imageURL = el.attr("src");   
+					String imageURL = el.attr("src");
+					if (!imageURL.contains(shortHost)){
+				    	imageURL = shortHost + "/" + imageURL;
+				    }
 					results = getNamePath(imageURL, this.shortHost);
-					String imagePath = results[0]; String imageName = results[1];
+					String imagePath = results[0]; //String imageName = results[1];
+					
+					System.out.println("getting image: "+imageURL); //TODO
 
 					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
 					Command query = new Get(this.shortHost,imagePath,this.HTTPVersion, "GET", outToServer, inFromServer);
@@ -78,12 +92,16 @@ public class Get extends RetrieveDataCommand {
 			}
 		}
 		else {
+			System.out.println("#####  not HTML file ######");
 			while (dataInFromServer != -1){
 				dataInFromServer = inFromServer.read();
 				binWriter.write(dataInFromServer);
 			}
 		}
+		
+		System.out.println("GOT the file " + path);
 		//close the stream to text file
+		
 		binWriter.close();
 	}
 
@@ -133,12 +151,11 @@ public class Get extends RetrieveDataCommand {
 		if (!URL.contains(shortHost)){
 			URL = shortHost + "/" + URL;
 		}
-		// ##### create directory structure and file #####
 
 		// get PATH this image, so without http etc
 		String path; String name;
 		path = URL.replace("http://","");				//filter out "http://" chars if they exist
-		if (path == shortHost){			//if you're requesting 'www.test.com'
+		if (path.equals(shortHost)){			//if you're requesting 'www.test.com'
 			// path = shortHost
 			name = shortHost;
 		}
