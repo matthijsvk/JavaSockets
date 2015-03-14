@@ -10,3 +10,7 @@
 /Respond.class
 /SendDataRespond.class
 /GetRespond.class
+/HeadRespond.class
+/PostRespond.class
+/PutRespond.class
+/ReceiveDataRespond.class

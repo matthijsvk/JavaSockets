@@ -1,6 +1,7 @@
 package ProjectWithCommandAsObject.src;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -14,10 +15,12 @@ public class Head extends RetrieveDataCommand {
 
 	public void execute() throws IOException{
 		super.execute();
+		PrintWriter out = new PrintWriter("header.txt");
+		out.println(this.header);
+		out.close();
 		if (this.HTTPVersion.equals("1.0")){
 			this.terminate();	// terminate the connection created by this Command
-								//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
+								//must be here instead ofin superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
 		}
 	}
-
-}
+} 
