@@ -1,8 +1,8 @@
 package ProjectWithCommandAsObject.src;
 
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 
@@ -10,8 +10,8 @@ public class RetrieveDataCommand extends Command {
 
 	protected String header = "";
 
-	public RetrieveDataCommand(String shortHost,String hostExtension, String HTTPVersion, String command,DataOutputStream outToServer,BufferedInputStream inFromServer){
-		super(shortHost,hostExtension,HTTPVersion, command, outToServer, inFromServer);	
+	public RetrieveDataCommand(String shortHost,String hostExtension, String HTTPVersion, String command, Socket clientSocket) throws UnknownHostException, IOException{
+		super(shortHost,hostExtension,HTTPVersion, command,clientSocket);	
 	}
 
 	public void execute() throws IOException{
@@ -40,6 +40,10 @@ public class RetrieveDataCommand extends Command {
 				a = outputFromServer;
 			}
 		}
+		
+		System.out.println("********** HEADER **********");
 		System.out.print(header);
+		System.out.println("******** END HEADER **********");
+
 	}
 }

@@ -1,8 +1,6 @@
 package ProjectWithCommandAsObject.src;
 
-
-// Import necessary IO and NETwork libraries
-import java.io.*;
+// Import necessary libraries
 import java.net.*;
 
 /*
@@ -30,27 +28,20 @@ public class TCPClient {
 		// Create a socket to host (URI, port).
 		Socket clientSocket = new Socket(shortHost, Integer.parseInt(args[2]));
 
-		// Create outputstream (convenient data writer) to this host. 
-		DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-
-
-		// Create an inputstream (convenient data reader) to this host
-		BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
-
 		Command query = null;
 
 		String command = args[0];
 		if(command.equals("GET")){
-			query = new Get(shortHost,hostExtension, args[3],command, outToServer,inFromServer);
+			query = new Get(shortHost,hostExtension, args[3],command, clientSocket);
 		}
 		if(command.equals("POST")){
-			query = new Post(shortHost, hostExtension, args[3], command, outToServer, inFromServer);
+			query = new Post(shortHost, hostExtension, args[3], command, clientSocket);
 		}
 		if(command.equals("PUT")){
-			query = new Put(shortHost,hostExtension, args[3],command, outToServer,inFromServer);
+			query = new Put(shortHost,hostExtension, args[3],command, clientSocket);
 		}
 		if(command.equals("HEAD")){
-			query = new Head(shortHost,hostExtension, args[3],command, outToServer,inFromServer);
+			query = new Head(shortHost,hostExtension, args[3],command, clientSocket);
 		}
 
 		query.execute();
@@ -59,8 +50,6 @@ public class TCPClient {
 		clientSocket.close();
 
 	} // End of main method
-
-
 
 } // End of class TCPClient
 

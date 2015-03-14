@@ -1,15 +1,15 @@
 package ProjectWithCommandAsObject.src;
 
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 public class Head extends RetrieveDataCommand {
 
 	public Head(String shortHost, String hostExtension, String HTTPVersion,
-			String command,DataOutputStream outToServer,BufferedInputStream inFromServer) {
-		super(shortHost, hostExtension, HTTPVersion, command, outToServer, inFromServer);
+			String command, Socket clientSocket) throws UnknownHostException, IOException {
+		super(shortHost, hostExtension, HTTPVersion, command, clientSocket);
 	}
 
 	public void execute() throws IOException{

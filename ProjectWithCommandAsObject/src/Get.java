@@ -1,12 +1,10 @@
 package ProjectWithCommandAsObject.src;
 
-
-
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
@@ -20,8 +18,8 @@ public class Get extends RetrieveDataCommand {
 	protected int length;
 
 
-	public Get(String shortHost,String hostExtension,String HTTPVersion, String command, DataOutputStream outToServer, BufferedInputStream inFromServer) {
-		super(shortHost,hostExtension,HTTPVersion, command, outToServer, inFromServer);
+	public Get(String shortHost,String hostExtension,String HTTPVersion, String command, Socket clientSocket) throws UnknownHostException, IOException {
+		super(shortHost,hostExtension,HTTPVersion, command, clientSocket);
 	}
 
 	public void execute() throws IOException{
@@ -29,6 +27,7 @@ public class Get extends RetrieveDataCommand {
 		super.execute();
 		this.parseHeader();
 		this.pullEntity();
+		this.terminate();	//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
 	}
 
 	private void pullEntity() throws IOException {
@@ -44,7 +43,7 @@ public class Get extends RetrieveDataCommand {
 			createDirStructure(path,name);
 		}
 		else{		//homepage, no directory needed
-			path = this.shortHost; name = this.shortHost.replace("www.","");int puntIndex=shortHost.indexOf(".");
+			path = this.shortHost; name = this.shortHost.replace("www.","");int puntIndex=name.indexOf(".");
 			name = name.substring(0, puntIndex);path=name+".html";
 		}
 
@@ -86,7 +85,7 @@ public class Get extends RetrieveDataCommand {
 					System.out.println("getting image: "+imageURL); //TODO
 
 					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
-					Command query = new Get(this.shortHost,imagePath,this.HTTPVersion, "GET", outToServer, inFromServer);
+					Command query = new Get(this.shortHost,"/"+imagePath,this.HTTPVersion, "GET", clientSocket);
 					query.execute();
 				}
 			}
@@ -120,7 +119,8 @@ public class Get extends RetrieveDataCommand {
 		int indexOfEndOfType = indexOfType;
 		while (endOfExtensionNotFound ){
 			indexOfEndOfType += 1;
-			if( (header.charAt(indexOfEndOfType)==13) || (header.substring(indexOfEndOfType,indexOfEndOfType+1)).equals(" ")) {
+			if( (header.charAt(indexOfEndOfType)==13) || (header.substring(indexOfEndOfType,indexOfEndOfType+1)).equals(" ") 
+					|| header.substring(indexOfEndOfType,indexOfEndOfType+1).equals(";")) {
 				endOfExtensionNotFound = false;
 			}
 		}
@@ -129,22 +129,27 @@ public class Get extends RetrieveDataCommand {
 
 		//parse for content length
 		int indexOfLength = header.indexOf("Content-Length:");
-		boolean lengthNotFound = true;
-		while (lengthNotFound ){
-			if( (header.substring(indexOfLength,indexOfLength+1)).equals(" ")){
-				lengthNotFound = false;
+		if (indexOfLength >0){
+			boolean lengthNotFound = true;
+			while (lengthNotFound ){
+				if( (header.substring(indexOfLength,indexOfLength+1)).equals(" ")){
+					lengthNotFound = false;
+				}
+				indexOfLength += 1;
 			}
-			indexOfLength += 1;
-		}
-		boolean endOfLengthNotFound = true;
-		int indexOfEndOfLength = indexOfLength;
-		while (endOfLengthNotFound ){
-			indexOfEndOfLength += 1;
-			if( (header.charAt(indexOfEndOfLength)==13) || (header.substring(indexOfEndOfLength,indexOfEndOfLength+1)).equals(" ")) {
-				endOfLengthNotFound = false;
+			boolean endOfLengthNotFound = true;
+			int indexOfEndOfLength = indexOfLength;
+			while (endOfLengthNotFound ){
+				indexOfEndOfLength += 1;
+				if( (header.charAt(indexOfEndOfLength)==13) || (header.substring(indexOfEndOfLength,indexOfEndOfLength+1)).equals(" ")) {
+					endOfLengthNotFound = false;
+				}
 			}
+			length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
 		}
-		length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
+		else{
+			length = -1;
+		}
 	}
 
 	public String[] getNamePath(String URL, String shortHost){
