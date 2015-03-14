@@ -40,6 +40,10 @@ public class RetrieveDataCommand extends Command {
 				a = outputFromServer;
 			}
 		}
+		
+		System.out.println("********** HEADER **********");
 		System.out.print(header);
+		System.out.println("******** END HEADER **********");
+
 	}
 }

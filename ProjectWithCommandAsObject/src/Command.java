@@ -38,6 +38,9 @@ public abstract class Command {
 		else{
 			//throw error
 		}
+		
+		System.out.println("TO BE SENT: "+toBeSent);
+		System.out.println("END TO BE SENT");
 	}
 
 
