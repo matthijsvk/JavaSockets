@@ -26,6 +26,7 @@ public class GetRespond extends SendDataRespond{
 		String str = new String(data, "UTF-8");
 		System.out.println(str);
 		outToClient.write(data);
+		System.out.println("Done sending");
 	}
 
 }
