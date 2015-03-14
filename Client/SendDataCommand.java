@@ -21,7 +21,7 @@ public class SendDataCommand extends Command {
 	       fileToBeSent = scanIn.nextLine();
 	       scanIn.close();
 
-	       Path path = Paths.get(fileToBeSent);
+	       Path path = Paths.get(fileToBeSent);		//read the file where the input was saved
 	       byte[] data = Files.readAllBytes(path);
 	       outToServer.write(data);
 

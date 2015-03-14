@@ -51,8 +51,9 @@ public class Get extends RetrieveDataCommand {
 			createDirStructure(path,name);
 		}
 		else{		//homepage, no directory needed
-			path = this.shortHost; name = this.shortHost.replace("www.","");int puntIndex=name.indexOf(".");
-			name = name.substring(0, puntIndex);path=name+".html";
+			// improving the filename
+			name = this.shortHost.replace("www.","");int puntIndex=name.indexOf(".");name = name.substring(0, puntIndex);
+			path=name+".html";
 		}
 
 		// make file to write to
@@ -206,7 +207,7 @@ public class Get extends RetrieveDataCommand {
 	 * @param path
 	 * @param name
 	 */
-	public static void createDirStructure(String path, String name){
+	public void createDirStructure(String path, String name){
 		// sometimes image url's don't include the "http://shortHost/" part
 
 		// get the DIRECTORY TREE and create it locally : imagePath - imageName
@@ -217,6 +218,8 @@ public class Get extends RetrieveDataCommand {
 			dirNames = dirNames.substring(0, dirNames.length()-1); 	// remove trailing slash
 
 			//System.out.println("DIRNAMES: "+ dirNames);
+			//String hostDirName = this.shortHost.replace("www.","");int puntIndex=name.indexOf(".");name = name.substring(0, puntIndex);
+			//dirNames = hostDirName + "/" + dirNames ;
 
 			File dir = new File("./" + dirNames);
 			// create directory structureFile

@@ -64,6 +64,8 @@ public abstract class Command {
 	
 	public void terminate() throws IOException{
 		this.clientSocket.close();
+		
+		// TODO change this to send a Connection:close header (see Additional Guidelines on Toledo)
 	}
 
 }
