@@ -1,11 +1,11 @@
-package ProjectWithCommandAsObject.src;
+package Server;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 
-public class PutRespond extends ReceiveDataRespond {
+public class PostRespond extends ReceiveDataRespond {
 
-	public PutRespond(String request, DataOutputStream outToClient,
+	public PostRespond(String request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient) {
 		super(request, outToClient, inFromClient);
 		// TODO Auto-generated constructor stub

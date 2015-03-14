@@ -1,4 +1,4 @@
-package ProjectWithCommandAsObject.src;
+package Client;
 
 import java.io.File;
 import java.io.FileOutputStream;

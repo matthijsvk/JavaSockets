@@ -1,4 +1,4 @@
-package ProjectWithCommandAsObject.src;
+package Client;
 
 // Import necessary libraries
 import java.net.*;

@@ -1,4 +1,4 @@
-package ProjectWithCommandAsObject.src;
+package Server;
 
 //Import necessary IO and NETwork libraries
 import java.io.*;

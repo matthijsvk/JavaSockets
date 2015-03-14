@@ -1,4 +1,4 @@
-package ProjectWithCommandAsObject.src;
+package Server;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
