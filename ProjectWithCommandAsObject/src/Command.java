@@ -24,13 +24,13 @@ public abstract class Command {
 		this.hostExtension = hostExtension;
 		createDataToBeSent(command);
 		
-		this.clientSocket = clientSocket;
-		
+		this.clientSocket = new Socket(shortHost, 80);//clientSocket; //  TODO when you make a new Socket here, it works, but like HTTP 1.0 (new connection for each file, Slow Start,...)
+																	  // if you make a new socket here, you have to call terminate() at the end of GET.execute()
 		// Create new outputstream (convenient data writer) to this host. 
-		DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+		DataOutputStream outToServer = new DataOutputStream(this.clientSocket.getOutputStream());
 
 		// Create an new inputstream (convenient data reader) to this host
-		BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
+		BufferedInputStream inFromServer = new BufferedInputStream(this.clientSocket.getInputStream());
 		
 		this.outToServer = outToServer;
 		this.inFromServer = inFromServer;

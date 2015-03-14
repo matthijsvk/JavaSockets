@@ -51,8 +51,6 @@ public class TCPClient {
 
 	} // End of main method
 
-
-
 } // End of class TCPClient
 
 
