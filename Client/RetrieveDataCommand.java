@@ -42,7 +42,7 @@ public class RetrieveDataCommand extends Command {
 		}
 		
 		//System.out.println("***** HEADER ******");
-		//System.out.print(header);
+		System.out.print(header);
 
 	}
 }

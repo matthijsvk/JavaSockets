@@ -1,9 +1,13 @@
 package test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Scanner;
 
 public class testClass {
@@ -22,26 +26,16 @@ public class testClass {
 //	       byte[] data = Files.readAllBytes(path);
 //	       System.out.println(data);
 	       
-	       String message="";
-	       char nextChar;
-	       String lastFour = "    ";
-	       while (!lastFour.equals("\r\n\r\n")){
-	    	   nextChar = (char)System.in.read();
-	    	   message = message + nextChar;
-	    	   lastFour = lastFour.substring(1, lastFour.length()) + nextChar; //shift one and add new character   
-	       }
-	       
-	       System.out.println("Header received. Now please enter your data/text:");
-	       lastFour= "    ";
-	       while (!lastFour.equals("\r\n\r\n")){
-	    	   nextChar = (char)System.in.read();
-	    	   message = message + nextChar;
-	    	   lastFour = lastFour.substring(1, lastFour.length()) + nextChar; //shift one and add new character   
-	       }
-	       
-	       System.out.println("Message received. Sending to server...");
-	       System.out.println(message);
-	       System.out.println("----------------------------------");
+		File fileToChange = new File("C:/myfile.txt");
+
+	    Date filetime = new Date(fileToChange.lastModified());
+	    System.out.println(filetime.toString());
+
+	    fileToChange.setLastModified(System.currentTimeMillis());
+
+	    filetime = new Date(fileToChange.lastModified());
+	    System.out.println(filetime.toString());
+	    
 	}
 
 }
