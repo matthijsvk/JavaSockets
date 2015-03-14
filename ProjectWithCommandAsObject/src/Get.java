@@ -1,12 +1,10 @@
 package ProjectWithCommandAsObject.src;
 
-
-
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
@@ -20,8 +18,8 @@ public class Get extends RetrieveDataCommand {
 	protected int length;
 
 
-	public Get(String shortHost,String hostExtension,String HTTPVersion, String command, DataOutputStream outToServer, BufferedInputStream inFromServer) {
-		super(shortHost,hostExtension,HTTPVersion, command, outToServer, inFromServer);
+	public Get(String shortHost,String hostExtension,String HTTPVersion, String command, Socket clientSocket) throws UnknownHostException, IOException {
+		super(shortHost,hostExtension,HTTPVersion, command, clientSocket);
 	}
 
 	public void execute() throws IOException{
@@ -29,6 +27,7 @@ public class Get extends RetrieveDataCommand {
 		super.execute();
 		this.parseHeader();
 		this.pullEntity();
+		this.terminate();	//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
 	}
 
 	private void pullEntity() throws IOException {
@@ -86,7 +85,7 @@ public class Get extends RetrieveDataCommand {
 					System.out.println("getting image: "+imageURL); //TODO
 
 					//createDirStructure(imagePath, imageName);  //already done at beginning of pullEntity
-					Command query = new Get(this.shortHost,"/"+imagePath,this.HTTPVersion, "GET", outToServer, inFromServer);
+					Command query = new Get(this.shortHost,"/"+imagePath,this.HTTPVersion, "GET", clientSocket);
 					query.execute();
 				}
 			}

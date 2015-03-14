@@ -3,6 +3,8 @@ package ProjectWithCommandAsObject.src;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 
 public abstract class Command {
@@ -13,14 +15,25 @@ public abstract class Command {
 	protected String toBeSent;
 	protected DataOutputStream outToServer;
 	protected BufferedInputStream inFromServer;
+	
+	protected Socket clientSocket;
 
-	public Command(String shortHost,String hostExtension, String HTTPVersion, String command,DataOutputStream outToServer,BufferedInputStream inFromServer){
+	public Command(String shortHost,String hostExtension, String HTTPVersion, String command, Socket clientSocket) throws UnknownHostException, IOException{
 		this.shortHost = shortHost;
 		this.HTTPVersion = HTTPVersion;
 		this.hostExtension = hostExtension;
+		createDataToBeSent(command);
+		
+		this.clientSocket = clientSocket;
+		
+		// Create new outputstream (convenient data writer) to this host. 
+		DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+
+		// Create an new inputstream (convenient data reader) to this host
+		BufferedInputStream inFromServer = new BufferedInputStream(clientSocket.getInputStream());
+		
 		this.outToServer = outToServer;
 		this.inFromServer = inFromServer;
-		createDataToBeSent(command);
 	}
 
 	public void execute() throws IOException{
@@ -42,7 +55,9 @@ public abstract class Command {
 		System.out.println("TO BE SENT: "+toBeSent);
 		System.out.println("END TO BE SENT");
 	}
-
-
+	
+	public void terminate() throws IOException{
+		this.clientSocket.close();
+	}
 
 }

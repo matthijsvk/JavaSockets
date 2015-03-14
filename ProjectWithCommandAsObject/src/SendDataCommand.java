@@ -1,9 +1,8 @@
 package ProjectWithCommandAsObject.src;
 
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.Path;
@@ -12,9 +11,8 @@ public class SendDataCommand extends Command {
 	protected String fileToBeSent;
 
 	public SendDataCommand(String shortHost, String hostExtension,
-			String HTTPVersion, String command, DataOutputStream outToServer,
-			BufferedInputStream inFromServer) throws IOException {
-		super(shortHost, hostExtension, HTTPVersion, command, outToServer, inFromServer);
+			String HTTPVersion, String command, Socket clientSocket) throws IOException {
+		super(shortHost, hostExtension, HTTPVersion, command, clientSocket);
 		
 		System.out.println("Enter something here : ");
 		 
