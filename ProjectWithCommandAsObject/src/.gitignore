@@ -6,3 +6,7 @@
 /RetrieveDataCommand.class
 /TCPClient.class
 /TCPServer.class
+/SendDataCommand.class
+/Respond.class
+/SendDataRespond.class
+/GetRespond.class
