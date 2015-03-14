@@ -2,19 +2,20 @@ package ProjectWithCommandAsObject.src;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Respond {
+public abstract class Respond {
+	
+	protected String request;
+	protected DataOutputStream outToClient;
+	protected BufferedInputStream inFromClient;
 
+	public Respond(String request, DataOutputStream outToClient, BufferedInputStream inFromClient) {
+		this.request = request;
+		this.inFromClient = inFromClient;
+		this.outToClient = outToClient;
+		}
 
-
-	public Respond(String request, DataOutputStream outToClient,
-			BufferedInputStream inFromClient) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public void execute() {
-		// TODO Auto-generated method stub
-		
-	}
+	public abstract void execute() throws IOException;
 
 }

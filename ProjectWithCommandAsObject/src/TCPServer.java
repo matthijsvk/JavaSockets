@@ -76,13 +76,13 @@ public class TCPServer
 				query = new GetRespond(request, outToClient, inFromClient);
 			}
 			if(command.equals("POST")){
-				query = new Respond(request, outToClient, inFromClient);
+				query = new PostRespond(request, outToClient, inFromClient);
 			}
 			if(command.equals("PUT")){
-				query = new Respond(request, outToClient, inFromClient);
+				query = new PutRespond(request, outToClient, inFromClient);
 			}
 			if(command.equals("HEAD")){
-				query = new Respond(request, outToClient, inFromClient);
+				query = new HeadRespond(request, outToClient, inFromClient);
 			}
 
 			query.execute();
