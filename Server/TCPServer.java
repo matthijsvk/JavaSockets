@@ -21,7 +21,7 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 			
-		int port = 7011;
+		int port = 7063;
 		
 		// Create server (incoming) socket on port 6789.
 		ServerSocket welcomeSocket = new ServerSocket(port);
@@ -87,12 +87,12 @@ public class TCPServer
 			System.out.println("we executed the Query");
 			}catch (FileNotFoundException fileNotFoundException){
 				System.out.println("ERROR 404 NOT FOUND");
-				String headerForClient = "HTTP/1.1 404 NOT FOUND\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 23" + "\r\n\r\n" + "<html> not found <html>";
+				String headerForClient = "HTTP/1.1 404 NOT FOUND\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 24" + "\r\n\r\n" + "</html> not found <html>";
 				System.out.println(headerForClient);
 				outToClient.writeBytes(headerForClient);
 			}catch (IOException anyOtherException){
 				System.out.println("ERROR 500 SERVER ERROR");
-				String headerForClient = "HTTP/1.1 500 SERVER ERROR\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 26" + "\r\n\r\n" + "<html> server error <html>";
+				String headerForClient = "HTTP/1.1 500 SERVER ERROR\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "</html> server error <html>";
 				System.out.println(headerForClient);
 				outToClient.writeBytes(headerForClient);}
 			}
