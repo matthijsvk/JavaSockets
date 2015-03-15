@@ -11,5 +11,4 @@ public class PutRespond extends ReceiveDataRespond {
 		super(request, outToClient, inFromClient, port);
 		// TODO Auto-generated constructor stub
 	}
-
 }

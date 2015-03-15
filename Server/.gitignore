@@ -8,3 +8,7 @@
 /TCPServer.class
 /testfaoiendao.class
 /traoidnearost.class
+/FileNotFoundException.class
+/NotModifiedSinceException.class
+/ThreadedPoolServer$WorkerRunnable.class
+/ThreadedPoolServer.class

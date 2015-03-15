@@ -5,8 +5,6 @@ import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 
-import jdk.nashorn.internal.ir.RuntimeNode.Request;
-
 /*
  * A simple example TCP Server application
  *

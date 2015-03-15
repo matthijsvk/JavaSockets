@@ -17,3 +17,8 @@
 /RetrieveDataCommand.class
 /testClass.class
 /images/*
+/linux-ip/*
+/tldp/*
+/*.class
+/*/*.class
+/tcpipguide/*
