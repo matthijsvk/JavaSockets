@@ -21,33 +21,31 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 			
-		int port = 7063;
+		int port = 7092;
 		
 		// Create server (incoming) socket on port 6789.
 		ServerSocket welcomeSocket = new ServerSocket(port);
-
+		
+		while (true){
 		// Wait for a connection to be made to the server socket. 
-		while(true)
-		{
-			// Create	 a 'real' socket from the Server socket.
-			Socket connectionSocket = welcomeSocket.accept();
+		// Create	 a 'real' socket from the Server socket.
+		Socket connectionSocket = welcomeSocket.accept();
+		
+		// Create an inputstream (convenient data reader) to this host
+		BufferedInputStream inFromClient = new BufferedInputStream(connectionSocket.getInputStream());
 
-			// Create an inputstream (convenient data reader) to this host
-			BufferedInputStream inFromClient = new BufferedInputStream(connectionSocket.getInputStream());
+		// Create outputstream (convenient data writer) to this host.
+		DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
 
-			// Create outputstream (convenient data writer) to this host.
-			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-
-			// Read text from the client, make it uppercase and write it back.
-//			String clientSentence = inFromClient.read();
-//			System.out.println("Received: " + clientSentence);
-//			String capsSentence = clientSentence.toUpperCase() + '\n';
-//			outToClient.writeBytes(capsSentence);
-//			System.out.println("Sent: "+ capsSentence);
-//			
-
-			int inputFromClient;
-			while (true){
+		// Read text from the client, make it uppercase and write it back.
+		//	String clientSentence = inFromClient.read();
+		//	System.out.println("Received: " + clientSentence);
+		//	String capsSentence = clientSentence.toUpperCase() + '\n';
+		//	outToClient.writeBytes(capsSentence);
+		//	System.out.println("Sent: "+ capsSentence);
+		//			
+		int inputFromClient;
+		while (true){
 			System.out.println("The next step is a read that seems to take forever!");
 			inputFromClient = inFromClient.read();
 			while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
@@ -83,23 +81,22 @@ public class TCPServer
 				query = new HeadRespond(request, outToClient, inFromClient, port);}
 			
 			try{
-			query.execute();
+				query.execute();
 			System.out.println("we executed the Query");
 			}catch (FileNotFoundException fileNotFoundException){
 				System.out.println("ERROR 404 NOT FOUND");
-				String headerForClient = "HTTP/1.1 404 NOT FOUND\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 24" + "\r\n\r\n" + "</html> not found <html>";
+				String headerForClient = "HTTP/1.1 404 NOT FOUND\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 24" + "\r\n\r\n" + "<html> not found </html>";
 				System.out.println(headerForClient);
 				outToClient.writeBytes(headerForClient);
 			}catch (IOException anyOtherException){
 				System.out.println("ERROR 500 SERVER ERROR");
-				String headerForClient = "HTTP/1.1 500 SERVER ERROR\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "</html> server error <html>";
+				String headerForClient = "HTTP/1.1 500 SERVER ERROR\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "<html> server error </html>";
 				System.out.println(headerForClient);
 				outToClient.writeBytes(headerForClient);}
 			}
 			}
-		}
-		//welcomeSocket.close();  //never reached because the server has to stay online to accept clients
-
+		} //never reached because the server has to stay online to accept clients
+		
 	} // End of main method.
 
 } // End of class TCPServer
