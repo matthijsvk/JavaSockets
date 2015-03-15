@@ -27,7 +27,7 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 
-		int port = 7036;
+		int port = 7026;
 
 		// Create server (incoming) socket on port 6789.
 		ServerSocket welcomeSocket = new ServerSocket(port);
