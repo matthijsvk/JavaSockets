@@ -14,21 +14,22 @@ public class SendDataRespond extends Respond {
 	protected Path path;
 
 
-
 	public SendDataRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 	}
 
 	@Override
-	public void execute() throws IOException {
+	public void execute() throws IOException, FileNotFoundException {
 		this.sendHeader();
 	}
 
-	private void sendHeader() throws IOException {
+	private void sendHeader() throws IOException, FileNotFoundException {
+			byte[] data;
 			String pathAsString = this.getPath();
 			path = Paths.get(pathAsString);
-			byte[] data = Files.readAllBytes(path);
+			try {data = Files.readAllBytes(this.path);}
+			catch (IOException didNotFindFile){throw new FileNotFoundException();}
 			Date date = new Date();
 			// TODO: status updates moeten nog goed 
 			header += "HTTP/1.1 200 OK\r\n";
@@ -42,8 +43,8 @@ public class SendDataRespond extends Respond {
 			else{
 				header += "image/" + extension + "\r\n";
 			}
+			if(this.httpVersion.equals("1.0")){header += "Connection: close" + "\r\n";}
 			header += "Content-Length: " + Integer.toString(data.length) + "\r\n\r\n";
-			outToClient.writeBytes(header);
 			System.out.println(header);
 	}
 	

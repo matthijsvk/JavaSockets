@@ -21,7 +21,7 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 			
-		int port = 7005;
+		int port = 7011;
 		
 		// Create server (incoming) socket on port 6789.
 		ServerSocket welcomeSocket = new ServerSocket(port);
@@ -50,7 +50,6 @@ public class TCPServer
 			while (true){
 			System.out.println("The next step is a read that seems to take forever!");
 			inputFromClient = inFromClient.read();
-			System.out.println("this is what I got:" + inputFromClient);
 			while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
 				System.out.println("Ready for new request!");
 			// Read data from the server and write it to the screen.
@@ -75,22 +74,29 @@ public class TCPServer
 			System.out.println(Arrays.toString(request));
 			Respond query = null;
 			if(request[0].substring(0, 3).equals("GET")){
-				query = new GetRespond(request, outToClient, inFromClient, port);
-			}
-			//System.out.println(request);
+				query = new GetRespond(request, outToClient, inFromClient, port);}
 			if(request[0].substring(0, 4).equals("POST")){
-				query = new PostRespond(request, outToClient, inFromClient, port);
-			}
+				query = new PostRespond(request, outToClient, inFromClient, port);}
 			if(request[0].substring(0, 3).equals("PUT")){
-				query = new PutRespond(request, outToClient, inFromClient, port);
-			}
+				query = new PutRespond(request, outToClient, inFromClient, port);}
 			if(request[0].substring(0, 4).equals("HEAD")){
-				query = new HeadRespond(request, outToClient, inFromClient, port);
-			}
+				query = new HeadRespond(request, outToClient, inFromClient, port);}
+			
+			try{
 			query.execute();
 			System.out.println("we executed the Query");
+			}catch (FileNotFoundException fileNotFoundException){
+				System.out.println("ERROR 404 NOT FOUND");
+				String headerForClient = "HTTP/1.1 404 NOT FOUND\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 23" + "\r\n\r\n" + "<html> not found <html>";
+				System.out.println(headerForClient);
+				outToClient.writeBytes(headerForClient);
+			}catch (IOException anyOtherException){
+				System.out.println("ERROR 500 SERVER ERROR");
+				String headerForClient = "HTTP/1.1 500 SERVER ERROR\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 26" + "\r\n\r\n" + "<html> server error <html>";
+				System.out.println(headerForClient);
+				outToClient.writeBytes(headerForClient);}
 			}
-		}
+			}
 		}
 		//welcomeSocket.close();  //never reached because the server has to stay online to accept clients
 

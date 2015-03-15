@@ -65,11 +65,11 @@ public abstract class Respond {
 		}
 		}
 		else{
-			shortHost= "www.linux-ip.net";
+			shortHost= "www.linux-ip.com";
 			hostExtension= host;
 		}
 	}
 
-	public abstract void execute() throws IOException;
+	public abstract void execute() throws IOException, FileNotFoundException;
 
 }
