@@ -7,8 +7,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
+import java.util.TimeZone;
+
+import com.sun.glass.ui.Pixels.Format;
 
 public class testClass {
 
@@ -36,6 +42,16 @@ public class testClass {
 	    filetime = new Date(fileToChange.lastModified());
 	    System.out.println(filetime.toString());
 	    
+	     System.out.println(getCurrentTime());
+	    
 	}
+	
+	private static String getCurrentTime(){
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return dateFormat.format(new Date());
+	}
+        
 
 }
