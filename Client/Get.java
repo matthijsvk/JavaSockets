@@ -26,7 +26,6 @@ public class Get extends RetrieveDataCommand {
 	public Get(String shortHost,String hostExtension,String HTTPVersion, String command, Socket clientSocket) throws UnknownHostException, IOException {
 		super(shortHost,hostExtension,HTTPVersion, command, clientSocket);
 		this.file = this.getFile();
-		
 	}
 
 	/**
@@ -43,45 +42,46 @@ public class Get extends RetrieveDataCommand {
 		}
 	}
 	
+	/**
+	 * This method creates the message to be sent as the GET command. It adds an If-Modified-Since line to the header if the GET object already exxists on the local system.
+	 */
 	@Override
 	public void createDataToBeSent(String command){
 		
-		System.out.println("CreateDATA in GET");
+		//System.out.println("CreateDATA in GET");
 
 		if (HTTPVersion.equals("1.0")){
-			toBeSent = command + " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n";
+			toBeSent = command + " "  + hostExtension + " HTTP/1.0";
 		}
 		else if (HTTPVersion.equals("1.1")){
-			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
+			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost ;
 		}
 		else{
 			//throw error
 		}
 		
-		if (this.file != null)
-			System.out.println("THE FILES HESRE: " +this.file);
-		System.out.println(this.file.exists());
+		//if (this.file != null)
+		//	System.out.println("THE FILES HESRE: " +this.file+ this.file.exists());
+		
 		// if the file already exists on the file system, check the last time it was modified and send that in the GET header
 		if (this.file != null && this.file.exists()){
 			
 			System.out.println("******* ALREADY HAVE THIS FILE **********");
+			System.out.println();
 			
 		    String lastModified = formatDate(new Date(file.lastModified()));
 		    //System.out.println(lastModified);
-		    toBeSent = toBeSent + "\r\n" +"If-Modified-Since: " + lastModified;
+		    //toBeSent = toBeSent + "\r\n" +"If-Modified-Since: " + lastModified;
+		    toBeSent = toBeSent + "\r\n" +"Connection: Keep-Alive";
 		}
+		
+		// finish toBeSent
+		toBeSent = toBeSent + "\r\n\r\n";
 		
 		System.out.println("TO BE SENT: "+toBeSent);
 	}
 
-	private File getFile() {
-		//String hostDirName = shortHost.replace("www.","");int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
-	    String relativePath = getPath(this.shortHost, this.hostExtension);
-	    String workingDirPath = System.getProperty("user.dir") + System.getProperty("file.separator"); //hostDirName is already appended in getPath()
-
-	    File file = new File(workingDirPath + System.getProperty("file.separator") + relativePath);
-		return file;
-	}
+	
 
 	/**
 	 * This method reads data from the server and interprets it. If it is a website (html), it is parsed and all embedded images are GET'ed too.
@@ -99,7 +99,11 @@ public class Get extends RetrieveDataCommand {
 		FileOutputStream binWriter = new FileOutputStream(path);
 
 		// Read data from the server
-		System.out.println("START getting "+this.extension+ " type file");	//TODO
+		if (this.extension.equals("html")){
+			System.out.println("First GETting all images....");
+			System.out.println();}
+		else
+			System.out.println("START getting "+this.extension+ " type file");	//TODO
 
 		int dataInFromServer = 0; 			//bytes you receive
 		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){	// if html, you have to pare it and GET all embedded images	
@@ -120,7 +124,7 @@ public class Get extends RetrieveDataCommand {
 
 			// get all images from the parsed document
 			Elements images = parsed.select("img[src~=(?i)\\.(png|jpe?g|gif)]");  
-			Elements links = new Elements();//parsed.select("a[href]");
+			Elements links = parsed.select("a[href]");//new Elements();
 
 			// get all the parsed objects: images and links
 			getLinksAndImages(images, links);
@@ -157,7 +161,6 @@ public class Get extends RetrieveDataCommand {
 
 				// try catch to not crash on 404 not found
 				try{
-					System.out.println("getting image: "+imageExtension); //TODO
 					Command query = new Get(this.shortHost,imageExtension,this.HTTPVersion, "GET", clientSocket);
 					query.execute();
 				}
@@ -286,6 +289,9 @@ public class Get extends RetrieveDataCommand {
 			else
 				path= hostDirName + "/" + "somethingWentWrong.error";
 		}
+		
+		//System.out.println("GETTING Path: " + path + " ... was "+shortHost+ " "+hostExtension);
+		
 		return path;
 	}
 
@@ -304,13 +310,11 @@ public class Get extends RetrieveDataCommand {
 		// remove trailing slash
 		dirNames = dirNames.substring(0, dirNames.length()-1); 	
 
-		//System.out.println("DIRNAMES: "+ dirNames);
-
 		// create directory structure
 		File dir = new File("./" + dirNames);
 		boolean successful = dir.mkdirs();
 //		if (successful)
-//			System.out.println("directories were created successfully");
+//			System.out.println("directories were created successfully" + dirNames);
 //		else
 //			System.out.println("failed trying to create the directories");
 	}
@@ -354,10 +358,28 @@ public class Get extends RetrieveDataCommand {
 		return extension;
 	}
 	
+	/**
+	 * This method returns the given date in the HTTP standard format.
+	 * @param date
+	 * @return
+	 */
 	private String formatDate(Date date){
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
 				"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.format(date);
+	}
+	
+	/**
+	 * This method returns the path this GET object has on the local system.
+	 * @return
+	 */
+	private File getFile() {
+		//String hostDirName = shortHost.replace("www.","");int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
+	    String relativePath = getPath(this.shortHost, this.hostExtension);
+	    String workingDirPath = System.getProperty("user.dir") + System.getProperty("file.separator"); //hostDirName is already appended in getPath()
+
+	    File file = new File(workingDirPath + System.getProperty("file.separator") + relativePath);
+		return file;
 	}
 }

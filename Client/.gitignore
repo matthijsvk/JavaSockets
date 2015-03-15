@@ -6,3 +6,5 @@
 /RetrieveDataCommand.class
 /SendDataCommand.class
 /TCPClient.class
+/GetNew.class
+/GetOld.class
