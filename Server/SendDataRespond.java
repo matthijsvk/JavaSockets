@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class SendDataRespond extends Respond {
 
@@ -20,16 +24,17 @@ public class SendDataRespond extends Respond {
 	}
 
 	@Override
-	public void execute() throws IOException, FileNotFoundException {
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
 		this.sendHeader();
 	}
 
-	private void sendHeader() throws IOException, FileNotFoundException {
+	private void sendHeader() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
 			byte[] data;
 			String pathAsString = this.getPath();
 			path = Paths.get(pathAsString);
 			try {data = Files.readAllBytes(this.path);}
 			catch (IOException didNotFindFile){throw new FileNotFoundException();}
+			this.checkIfModified();
 			Date date = new Date();
 			// TODO: status updates moeten nog goed 
 			header += "HTTP/1.1 200 OK\r\n";
@@ -50,6 +55,25 @@ public class SendDataRespond extends Respond {
 	
 	
 	
+	private void checkIfModified() throws ParseException, NotModifiedSinceException {
+		int counter = 0;
+		while(this.request[counter].length() > 5  && !this.request[counter].substring(0, 6).equals("If-Mo")){
+			counter += 1;
+		}
+		System.out.println(request[counter]);
+		if(!this.request[counter].equals("\r\n")){
+		String dateAsString = this.request[counter].substring(19);
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date result = dateFormat.parse(dateAsString);
+        result.getTime();
+        if(result.getTime() > this.path.toFile().lastModified()){
+        	throw new NotModifiedSinceException();
+        }
+		}
+	}
+
 	private String getExtensionFromPath(String pathAsString) {
 		int counter = pathAsString.length();
 		while(!pathAsString.substring(counter-1, counter).equals(".")){

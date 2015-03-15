@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 
 public class GetRespond extends SendDataRespond{
 
@@ -16,7 +17,7 @@ public class GetRespond extends SendDataRespond{
 	
 
 	@Override
-	public void execute() throws IOException, FileNotFoundException {
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
 		System.out.println("Started sending a get");
 		super.execute();
 		this.sendEntity();

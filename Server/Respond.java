@@ -3,6 +3,7 @@ package Server;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 
 public abstract class Respond {
 	
@@ -70,6 +71,6 @@ public abstract class Respond {
 		}
 	}
 
-	public abstract void execute() throws IOException, FileNotFoundException;
+	public abstract void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException;
 
 }
