@@ -65,7 +65,7 @@ public abstract class Respond {
 		}
 		}
 		else{
-			shortHost= "www.linux-ip.com";
+			shortHost= "www.linux-ip.net";
 			hostExtension= host;
 		}
 	}
