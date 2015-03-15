@@ -13,6 +13,7 @@ public class GetRespond extends SendDataRespond{
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 	}
+	
 
 	@Override
 	public void execute() throws IOException, FileNotFoundException {
