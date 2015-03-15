@@ -21,7 +21,7 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 			
-		int port = 7089;
+		int port = 7092;
 		
 		// Create server (incoming) socket on port 6789.
 		ServerSocket welcomeSocket = new ServerSocket(port);
@@ -44,9 +44,8 @@ public class TCPServer
 		//	outToClient.writeBytes(capsSentence);
 		//	System.out.println("Sent: "+ capsSentence);
 		//			
-
-		int inputFromClient = 0;
-		while (inputFromClient != -1){
+		int inputFromClient;
+		while (true){
 			System.out.println("The next step is a read that seems to take forever!");
 			inputFromClient = inFromClient.read();
 			while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
