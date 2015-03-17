@@ -19,7 +19,7 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 			
-		int port = 7092;
+		int port = 7094; 
 		
 		// Create server (incoming) socket on port 6789.
 		ServerSocket welcomeSocket = new ServerSocket(port);
@@ -46,6 +46,7 @@ public class TCPServer
 		while (true){
 			System.out.println("The next step is a read that seems to take forever!");
 			inputFromClient = inFromClient.read();
+			//Matthijs is supercool!!!!
 			while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
 				System.out.println("Ready for new request!");
 			// Read data from the server and write it to the screen.
