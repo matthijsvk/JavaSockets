@@ -8,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import sun.security.tools.PathList;
-
 public class PostRespond extends ReceiveDataRespond {
 
 	public PostRespond(String[] request, DataOutputStream outToClient,
