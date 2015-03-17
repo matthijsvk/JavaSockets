@@ -123,8 +123,9 @@ public class Get extends RetrieveDataCommand {
 			Document parsed = Jsoup.parse(htmlFromServer);
 
 			// get all images from the parsed document
-			Elements images = parsed.select("img[(lowsrc|src)~=(?i)\\.(png|jpe?g|gif)]");  
+			Elements images = parsed.select("img[src~=(?i)\\.(png|jpe?g|gif)]");  
 			Elements links = parsed.select("a[href]");//new Elements();
+			
 
 			// get all the parsed objects: images and links
 			getLinksAndImages(images, links);
@@ -165,27 +166,41 @@ public class Get extends RetrieveDataCommand {
 					query.execute();
 				}
 				catch (Exception e){;}
-			}
-		}
-		
-		if (links.size() > 0){
-			for (Element link : links) {						// iterate, we've gotta GET them all!!		
-				String URL = link.attr("href");
-				URL = URL.replace("http://","");	// remove the absolute adressing stuff
-
-				String[] results = parseShort_ExtensionURL(URL);
-				String shortURL = results[0]; String URLExtension = results[1];
-
+				
+				//this is for tcpIpguide because they use a special html
+				imageURL = el.attr("lowsrc");			// some images are relative (/images/image.jpg), some are absolute (http://www.test.com/images/image.jpg)
+				imageURL = imageURL.replace("http://","");	// remove the absolute adressing stuff
+				imageExtension = imageURL.replace(shortHost, "");
+				if (imageExtension.indexOf("/") != 0)		//add leading slash if not exists
+					imageExtension = "/" + imageExtension;
 
 				// try catch to not crash on 404 not found
 				try{
-					System.out.println("getting URL: "+URLExtension); //TODO
-					Command query = new Get(shortURL,URLExtension,this.HTTPVersion, "GET", clientSocket);
+					Command query = new Get(this.shortHost,imageExtension,this.HTTPVersion, "GET", clientSocket);
 					query.execute();
 				}
 				catch (Exception e){;}
 			}
 		}
+		
+//		if (links.size() > 0){
+//			for (Element link : links) {						// iterate, we've gotta GET them all!!		
+//				String URL = link.attr("href");
+//				URL = URL.replace("http://","");	// remove the absolute adressing stuff
+//
+//				String[] results = parseShort_ExtensionURL(URL);
+//				String shortURL = results[0]; String URLExtension = results[1];
+//
+//
+//				// try catch to not crash on 404 not found
+//				try{
+//					System.out.println("getting URL: "+URLExtension); //TODO
+//					Command query = new Get(shortURL,URLExtension,this.HTTPVersion, "GET", clientSocket);
+//					query.execute();
+//				}
+//				catch (Exception e){;}
+//			}
+//		}
 	}
 
 	/**

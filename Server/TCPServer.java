@@ -19,21 +19,21 @@ public class TCPServer
 	public static void main(String argv[]) throws Exception
 	{
 			
-		int port = 7094; 
+		int serverPort = 7094; 
 		
 		// Create server (incoming) socket on port 6789.
-		ServerSocket welcomeSocket = new ServerSocket(port);
+		ServerSocket serverSocket = new ServerSocket(serverPort);
 		
 		while (true){
 		// Wait for a connection to be made to the server socket. 
 		// Create	 a 'real' socket from the Server socket.
-		Socket connectionSocket = welcomeSocket.accept();
+		Socket clientSocket = serverSocket.accept();
 		
 		// Create an inputstream (convenient data reader) to this host
-		BufferedInputStream inFromClient = new BufferedInputStream(connectionSocket.getInputStream());
+		BufferedInputStream inFromClient = new BufferedInputStream(clientSocket.getInputStream());
 
 		// Create outputstream (convenient data writer) to this host.
-		DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+		DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());
 
 		// Read text from the client, make it uppercase and write it back.
 		//	String clientSentence = inFromClient.read();
@@ -71,13 +71,13 @@ public class TCPServer
 			System.out.println(Arrays.toString(request));
 			Respond query = null;
 			if(request[0].substring(0, 3).equals("GET")){
-				query = new GetRespond(request, outToClient, inFromClient, port);}
+				query = new GetRespond(request, outToClient, inFromClient, serverPort);}
 			if(request[0].substring(0, 4).equals("POST")){
-				query = new PostRespond(request, outToClient, inFromClient, port);}
+				query = new PostRespond(request, outToClient, inFromClient, serverPort);}
 			if(request[0].substring(0, 3).equals("PUT")){
-				query = new PutRespond(request, outToClient, inFromClient, port);}
+				query = new PutRespond(request, outToClient, inFromClient, serverPort);}
 			if(request[0].substring(0, 4).equals("HEAD")){
-				query = new HeadRespond(request, outToClient, inFromClient, port);}
+				query = new HeadRespond(request, outToClient, inFromClient, serverPort);}
 			
 			try{
 				query.execute();

@@ -17,7 +17,7 @@ import java.util.TimeZone;
 public class testClass {
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Please enter the Header: ");
+//		System.out.println("Please enter the Header: ");
 		 
 //	       Scanner scanIn = new Scanner(System.in);
 //	       String fileToBeSent = scanIn.nextLine();
@@ -30,26 +30,33 @@ public class testClass {
 //	       byte[] data = Files.readAllBytes(path);
 //	       System.out.println(data);
 	       
-		File fileToChange = new File("C:/myfile.txt");
-
-	    Date filetime = new Date(fileToChange.lastModified());
-	    System.out.println(filetime.toString());
-
-	    fileToChange.setLastModified(System.currentTimeMillis());
-
-	    filetime = new Date(fileToChange.lastModified());
-	    System.out.println(filetime.toString());
-	    
-	     System.out.println(getCurrentTime());
+//		File fileToChange = new File("C:/myfile.txt");
+//
+//	    Date filetime = new Date(fileToChange.lastModified());
+//	    System.out.println(filetime.toString());
+//
+//	    fileToChange.setLastModified(System.currentTimeMillis());
+//
+//	    filetime = new Date(fileToChange.lastModified());
+//	    System.out.println(filetime.toString());
+//	    
+//	     System.out.println(getCurrentTime());
+//	     
+//	     System.out.println(System.currentTimeMillis()+" "+System.currentTimeMillis()/1000);
+	     
+	     Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"trollface.txt");
+		 byte[] data = Files.readAllBytes(path);
+		 String str = new String(data, "UTF-8");
+		 System.out.println(str);
 	    
 	}
 	
-	private static String getCurrentTime(){
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return dateFormat.format(new Date());
-	}
+//	private static String getCurrentTime(){
+//		SimpleDateFormat dateFormat = new SimpleDateFormat(
+//				"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+//        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+//        return dateFormat.format(new Date());
+//	}
         
 
 }
