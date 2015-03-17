@@ -167,19 +167,19 @@ public class Get extends RetrieveDataCommand {
 				}
 				catch (Exception e){;}
 				
-				//this is for tcpIpguide because they use a special html
-				imageURL = el.attr("lowsrc");			// some images are relative (/images/image.jpg), some are absolute (http://www.test.com/images/image.jpg)
-				imageURL = imageURL.replace("http://","");	// remove the absolute adressing stuff
-				imageExtension = imageURL.replace(shortHost, "");
-				if (imageExtension.indexOf("/") != 0)		//add leading slash if not exists
-					imageExtension = "/" + imageExtension;
-
-				// try catch to not crash on 404 not found
-				try{
-					Command query = new Get(this.shortHost,imageExtension,this.HTTPVersion, "GET", clientSocket);
-					query.execute();
-				}
-				catch (Exception e){;}
+//				//this is for tcpIpguide because they use a special html
+//				imageURL = el.attr("lowsrc");			// some images are relative (/images/image.jpg), some are absolute (http://www.test.com/images/image.jpg)
+//				imageURL = imageURL.replace("http://","");	// remove the absolute adressing stuff
+//				imageExtension = imageURL.replace(shortHost, "");
+//				if (imageExtension.indexOf("/") != 0)		//add leading slash if not exists
+//					imageExtension = "/" + imageExtension;
+//
+//				// try catch to not crash on 404 not found
+//				try{
+//					Command query = new Get(this.shortHost,imageExtension,this.HTTPVersion, "GET", clientSocket);
+//					query.execute();
+//				}
+//				catch (Exception e){;}
 			}
 		}
 		

@@ -21,11 +21,11 @@ public class ThreadedPoolServer implements Runnable{
 	public ThreadedPoolServer(int port){
 		this.serverPort = port;
 	}
-	protected static int          serverPort   = 8081;
+	protected static int   serverPort   = 7118;
 	protected ServerSocket serverSocket = null;
 	protected boolean      isStopped    = false;
 	protected Thread       runningThread= null;
-	protected ExecutorService threadPool =  Executors.newFixedThreadPool(10);		//thread pool contains 10 threads
+	protected ExecutorService threadPool =  Executors.newFixedThreadPool(100);		//thread pool contains 10 threads
 
 	/**Start a server and keep it running for a while, then shut it down
 	 * @param args
@@ -34,13 +34,13 @@ public class ThreadedPoolServer implements Runnable{
 		ThreadedPoolServer server = new ThreadedPoolServer(serverPort);
 		new Thread(server).start();	//this starts a new thread which executes the run() method in this class. 
 
-		try {
-			Thread.sleep(20 * 1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Stopping Server");
-		server.stop();	//stop the while loop and finish all existing threads, refusing new connections
+//		try {
+//			Thread.sleep(20 * 1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("Stopping Server");
+//		server.stop();	//stop the while loop and finish all existing threads, refusing new connections
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class ThreadedPoolServer implements Runnable{
 		synchronized(this){this.runningThread = Thread.currentThread();}	//synchronize the threads
 		try { 
 			this.serverSocket = new ServerSocket(this.serverPort);			//create a new socket on the port to listen for new Clients
-		} catch (IOException e) {throw new RuntimeException("Cannot open port 8080", e);}
+		} catch (IOException e) {throw new RuntimeException("Cannot open port"+serverPort, e);}
 
 		while(! isStopped()){
 			Socket clientSocket = null;
