@@ -123,7 +123,7 @@ public class Get extends RetrieveDataCommand {
 			Document parsed = Jsoup.parse(htmlFromServer);
 
 			// get all images from the parsed document
-			Elements images = parsed.select("img[src~=(?i)\\.(png|jpe?g|gif)]");  
+			Elements images = parsed.select("img[(lowsrc|src)~=(?i)\\.(png|jpe?g|gif)]");  
 			Elements links = parsed.select("a[href]");//new Elements();
 
 			// get all the parsed objects: images and links
