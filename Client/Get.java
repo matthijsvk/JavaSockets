@@ -154,8 +154,6 @@ public class Get extends RetrieveDataCommand {
 
 	/**
 	 * This method GETs all images and links that are passed as its arguments. These arguments are generally the results of the parsing of a html file.
-	 * @param images
-	 * @param links
 	 */
 	private void getLinksAndImages(Elements images, Elements links) {
 		

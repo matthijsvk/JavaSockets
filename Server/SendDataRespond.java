@@ -12,22 +12,32 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+//This is a class for responses to head and get requests
 public class SendDataRespond extends Respond {
 
 	protected String header = "";
 	protected Path path;
 
-
+	/**
+	 * Constructor
+	 */
 	public SendDataRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 	}
 
+	/**
+	 * This executes the request
+	 */
 	@Override
-	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException {
+		super.execute();
 		this.sendHeader();
 	}
-
+	
+	/**
+	 * Scans the requested file and makes a header for it, then sends the header to the client
+	 */
 	private void sendHeader() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
 		byte[] data;
 		String pathAsString = this.getPath();
@@ -54,26 +64,33 @@ public class SendDataRespond extends Respond {
 	}
 
 
-
+	/**
+	 * Checks if the client has an outdated version of the requested file,
+	 * throws a NotModifiedException if not.
+	 */
 	private void checkIfModified() throws ParseException, NotModifiedSinceException {
+		System.out.println("checking date now");
 		int counter = 0;
-		while(this.request[counter].length() > 5  && !this.request[counter].substring(0, 6).equals("If-Mod")){
+		while(this.request[counter].length() > 5  && !this.request[counter].substring(0, 7).equals("If-Modi")){
 			counter += 1;
 		}
-		System.out.println(request[counter]);
 		if(!this.request[counter].equals("\r\n")){
 			String dateAsString = this.request[counter].substring(19);
 			SimpleDateFormat dateFormat = new SimpleDateFormat(
 					"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
 			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 			Date result = dateFormat.parse(dateAsString);
-			result.getTime();
+			System.out.println(result.getTime());
+			System.out.println(this.path.toFile().lastModified());
 			if(result.getTime() > this.path.toFile().lastModified()){
 				throw new NotModifiedSinceException();
 			}
 		}
 	}
-
+	
+	/**
+	 * Gets the path to the requested file from the requested URL
+	 */
 	private String getExtensionFromPath(String pathAsString) {
 		int counter = pathAsString.length();
 		while(!pathAsString.substring(counter-1, counter).equals(".")){
@@ -85,9 +102,6 @@ public class SendDataRespond extends Respond {
 	/**
 	 * this function returns the path to a file. If the file is a website (www.test.com), is is stored in test/test.html
 	 * 											 If the file is a normal file (www.test.com/dir/file), it is stored in test/dir/file
-	 * @param shortHost
-	 * @param hostExtension
-	 * @return
 	 */
 	public String getPath(){
 		String path = null;
