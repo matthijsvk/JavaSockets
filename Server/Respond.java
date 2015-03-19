@@ -28,9 +28,10 @@ public abstract class Respond {
 	
 	//TODO: bij alles eigenlijk is geen rekening gehouden met 1.1 of 1.0
 	private void checkForHostLineIf11() throws IOException {
-		if(httpVersion.equals("1.1") && !request[1].equals("Host: localhost:" + Integer.toString(port) +"\r\n")){
-				System.out.println("ERROR: HTTP 1.1 requested and no host line extension!");
-			}
+		//if(httpVersion.equals("1.1") && !request[1].equals("Host: localhost"+"\r\n")){
+		//		System.out.println("ERROR: HTTP 1.1 requested and no host line extension!");
+		//	}
+		//TODO dit is uiteraard niet ok
 		}
 
 	

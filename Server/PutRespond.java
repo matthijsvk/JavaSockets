@@ -17,11 +17,14 @@ public class PutRespond extends ReceiveDataRespond {
 		// TODO Auto-generated constructor stub
 	}
 	public void execute() throws IOException{
+		System.out.println("we are executing a put");
 		super.execute();
+		System.out.println("we got past the super");
 		double randDouble = Math.random()*100;
 		int randInt= (int) Math.round(randDouble);
 		PrintWriter out = new PrintWriter("put"+randInt+".txt");
 		out.print(data);
 		out.close();
+		System.out.println("we have executed a put");
 	}
 }
