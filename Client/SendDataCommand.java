@@ -58,11 +58,11 @@ public class SendDataCommand extends Command {
 	
 	public void execute() throws IOException{
 		super.execute();						//send command and host
-		outToServer.writeBytes(dataToBeSent);	//send header and data body
+		outToServer.writeBytes(dataToBeSent);	//send header and data body, because this is put/post you have to send more than just 
 	}
 	
 	@Override
-	public void createDataToBeSent(String command){		// you have to modify this because an extra line is needed for http 1.1 (host line)
+	public void createDataToBeSent(String command){		// you have to modify this because only one "\r\n"; more has to follow
 		
 		if (HTTPVersion.equals("1.0")){
 			toBeSent = command + " "  + hostExtension + " HTTP/1.0"+"\r\n";

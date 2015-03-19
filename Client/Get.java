@@ -132,7 +132,7 @@ public class Get extends RetrieveDataCommand {
 			Elements images = parsed.select("img[src~=(?i)\\.(png|jpe?g|gif)]");  
 			Elements links = parsed.select("a[href]");//new Elements();
 			
-
+			System.out.println(images);
 			// get all the parsed objects: images and links
 			getLinksAndImages(images, links);
 		}
@@ -155,14 +155,17 @@ public class Get extends RetrieveDataCommand {
 	 * This method GETs all images and links that are passed as its arguments. These arguments are generally the results of the parsing of a html file.
 	 */
 	private void getLinksAndImages(Elements images, Elements links) {
-		
 		if (images.size() > 0){
 			for (Element el : images) {						// iterate, we've gotta GET them all!!
 				String imageURL = el.attr("src");			// some images are relative (/images/image.jpg), some are absolute (http://www.test.com/images/image.jpg)
+				
 				imageURL = imageURL.replace("http://","");	// remove the absolute adressing stuff
 				String imageExtension = imageURL.replace(shortHost, "");
-				if (imageExtension.indexOf("/") != 0)		//add leading slash if not exists
-					imageExtension = "/" + imageExtension;
+				
+				if (!imageURL.contains("/") || (! imageURL.substring(0, imageURL.indexOf("/")).contains("www."))){		// don't do this for absolute adressing images
+					if (imageExtension.indexOf("/") != 0)		//add leading slash if not exists beacause relative path in shortHost server
+						imageExtension = "/" + imageExtension;
+				}
 
 				// try catch to not crash on 404 not found
 				try{
@@ -276,10 +279,12 @@ public class Get extends RetrieveDataCommand {
 			path = hostDirName+ "/" + hostDirName + ".html";	// it is stored under 'test/test.html'
 		}
 		else{
-			if (hostExtension.indexOf("/") == 0)	// for normal files,
+			if (hostExtension.indexOf("/") == 0)	// for normal files that are adressed relatively
 				path = hostDirName + hostExtension; // store under the folder of their website
-			else
-				path= hostDirName + "/" + "somethingWentWrong.error";	//this never occurs
+			else{
+				System.out.println(shortHost + " " + hostExtension);	//this normally doesn't occur except for absolutely adressed files
+				path= hostDirName + "/" + hostExtension;	
+			}
 		}
 		
 		//System.out.println("GETTING Path: " + path + " ... was "+shortHost+ " "+hostExtension);

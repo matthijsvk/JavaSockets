@@ -9,6 +9,9 @@ public class Post extends SendDataCommand {	// most of the work is done in the s
 	public Post(String shortHost, String hostExtension, String HTTPVersion,
 			String command, Socket clientSocket) throws IOException {
 		super(shortHost, hostExtension, HTTPVersion, command, clientSocket);
+	}
+	
+	public void execute() throws IOException{
 		super.execute();
 		if (this.HTTPVersion.equals("1.0")){
 			this.terminate();	// terminate the connection created by this Command
