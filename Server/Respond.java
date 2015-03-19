@@ -33,7 +33,9 @@ public abstract class Respond {
 	 * Checks if request is conform to HTTP 1.1 syntax, throws error if this is not the case
 	 */
 	private void checkForHostLineIf11() throws IOException, BadRequestException {
-		if(httpVersion.equals("1.1") && !request[1].toLowerCase().equals("Host: localhost".toLowerCase()+"\r\n")){
+		if(httpVersion.equals("1.1") && !request[1].toLowerCase().equals("Host: localhost".toLowerCase()+"\r\n") &&
+				!request[1].toLowerCase().equals("Host: localhost:".toLowerCase()+port+"\r\n")&&
+				!request[1].toLowerCase().equals("Host: 25.133.59.19".toLowerCase()+"\r\n")){
 			System.out.println("ERROR: HTTP 1.1 requested and no host header line!");
 			System.out.println(request[1]);
 			throw new BadRequestException();
@@ -75,7 +77,7 @@ public abstract class Respond {
 			}
 		}
 		else{
-			shortHost= "www.linux-ip.net";
+			shortHost= "www.tinyos.net";
 			hostExtension= host;
 		}
 	}
