@@ -55,7 +55,7 @@ public abstract class Command {
 			toBeSent = command + " "  + hostExtension + " HTTP/1.0" + "\r\n\r\n";
 		}
 		else if (HTTPVersion.equals("1.1")){
-			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost + "\r\n\r\n";
+			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "Host: " + shortHost + "\r\n\r\n";
 		}
 		else{
 			//throw error
