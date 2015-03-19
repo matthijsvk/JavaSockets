@@ -5,17 +5,24 @@ import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+//This a class for the response of the server to a put or post command
 public class ReceiveDataRespond extends Respond {
 
 	protected int length;
 	protected String data = "";
-
+	
+	/**
+	 * Constructor
+	 */
 	public ReceiveDataRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	/**
+	 * This executes the command, this means parsing the header and reading the sent entity data
+	 */
 	@Override
 	public void execute() throws IOException {
 		parseHeader();
@@ -23,6 +30,9 @@ public class ReceiveDataRespond extends Respond {
 		readData();
 	}
 	
+	/**
+	 * Reads the entity data sent by the client
+	 */
 	protected void readData() throws IOException {
 		System.out.println("the length of data is" + length);
 		int counter = 0;
@@ -31,7 +41,10 @@ public class ReceiveDataRespond extends Respond {
 			counter += 1; 
 		}
 	}
-
+	
+	/**
+	 * Parses the header
+	 */
 	public void parseHeader() {
 		int counter = 0;
 //		String header = ""; 

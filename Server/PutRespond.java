@@ -9,13 +9,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 
-public class PutRespond extends ReceiveDataRespond {
 
+//This a class for the response of the server to a put command
+public class PutRespond extends ReceiveDataRespond {
+	
+	/**
+	 * Constructor
+	 */
 	public PutRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
-		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * Executes the post, this means that it writes the received data to a new local .txt file
+	 */
 	public void execute() throws IOException{
 		System.out.println("we are executing a put");
 		super.execute();
