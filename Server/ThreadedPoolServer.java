@@ -26,6 +26,8 @@ public class ThreadedPoolServer implements Runnable{
 	protected Thread       runningThread= null;
 	protected ExecutorService threadPool =  Executors.newFixedThreadPool(100);		//thread pool contains 10 threads
 	
+	public static boolean trollface = true;
+	
 	/**
 	 * Start a server and keep it running for a while, then shut it down
 	 */

@@ -17,6 +17,7 @@ public class WorkerRunnable implements Runnable{
 	protected int serverPort;
 	protected Socket clientSocket = null;
 	protected String serverText   = null;
+	
 
 	public WorkerRunnable(Socket clientSocket, String serverText, int serverPort) {
 		this.clientSocket = clientSocket;
@@ -86,17 +87,32 @@ public class WorkerRunnable implements Runnable{
 						System.out.println("ERROR 404 NOT FOUND");
 
 						String str;
-						try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"404.html");//"trollface.txt"
-						byte[] data = Files.readAllBytes(path);
-						str = new String(data, "UTF-8");
+						String headerForClient;
+
+						if (ThreadedPoolServer.trollface){
+							Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"trollface.txt");
+							byte[] data = Files.readAllBytes(path);
+							str = new String(data, "UTF-8");
+							int strLength = str.length();
+							int contentLength = 24 + strLength;
+							headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+contentLength+"\r\n\r\n" + "<html> not found \n" +str+"</html>";
+							ThreadedPoolServer.trollface = false;
+							System.out.println("TROLLFACE: "+ThreadedPoolServer.trollface);
 						}
-						catch(Exception e){System.out.println("raar...");str = "";}
-						int strLength = str.length();
-						int contentLength = 24 + strLength;
+						else{
+							System.out.println("TROLLFACE RICK ROLLLLLLLLLL");
+							Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"404.html");
+							byte[] data = Files.readAllBytes(path);
+							str = new String(data, "UTF-8");
+							int strLength = str.length();
+							int contentLength = strLength;
+							headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+contentLength+"\r\n\r\n" + str;
+							ThreadedPoolServer.trollface = true;
+							System.out.println("TROLLFACE_NOT: "+ ThreadedPoolServer.trollface);
 
-						String headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+contentLength+"\r\n\r\n" + "<html> not found \n" +str+"</html>";
+						}
 
-						System.out.println(headerForClient);
+						//System.out.println(headerForClient);
 						outToClient.writeBytes(headerForClient);
 					}catch (IOException anyOtherException){
 						System.out.println("ERROR 500 SERVER ERROR");
