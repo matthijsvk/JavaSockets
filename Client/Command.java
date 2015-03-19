@@ -45,8 +45,8 @@ public abstract class Command {
 	}
 
 	public void execute() throws IOException{
-		createDataToBeSent(command);
-		outToServer.writeBytes(toBeSent);
+		createDataToBeSent(command);		// create the command string
+		outToServer.writeBytes(toBeSent);	// write the command string
 	}
 
 	public void createDataToBeSent(String command){
@@ -64,7 +64,7 @@ public abstract class Command {
 		//System.out.println("TO BE SENT: "+toBeSent);
 	}
 	
-	public void terminate() throws IOException{
+	public void terminate() throws IOException{		// close the socket
 		this.clientSocket.close();
 		
 		// TODO change this to send a Connection:close header (see Additional Guidelines on Toledo)

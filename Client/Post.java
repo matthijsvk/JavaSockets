@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 
-public class Post extends SendDataCommand {
+public class Post extends SendDataCommand {	// most of the work is done in the superclass
 
 	public Post(String shortHost, String hostExtension, String HTTPVersion,
 			String command, Socket clientSocket) throws IOException {

@@ -15,36 +15,26 @@ public class SendDataCommand extends Command {
 		super(shortHost, hostExtension, HTTPVersion, command, clientSocket);
 		
 		System.out.println("Enter the Header: ");
-		 
-		
-//	       Scanner scanIn = new Scanner(System.in);
-//	       fileToBeSent = scanIn.nextLine();
-//	       scanIn.close();
-//
-//	       Path path = Paths.get(fileToBeSent);		//read the file where the input was saved
-//	       byte[] data = Files.readAllBytes(path);
-//	       outToServer.write(data);
-	       
 	       
 	       String dataToBeSentHeader = ""; String dataToBeSentBody = "";
 	       char nextChar;
-	       String lastFour = "  ";
-	       while (!lastFour.equals("\n\n")){
+	       String lastTwo = "  ";
+	       while (!lastTwo.equals("\n\n")){		// first get the header from the command line
 	    	   nextChar = (char)System.in.read();
 	    	   System.out.println(nextChar);
 	    	   dataToBeSentHeader = dataToBeSentHeader + nextChar;
-	    	   lastFour = lastFour.substring(1, lastFour.length()) + nextChar; //shift one and add new character   
+	    	   lastTwo = lastTwo.substring(1, lastTwo.length()) + nextChar; //shift one and add new character   
 	       }
 	       dataToBeSentHeader = dataToBeSentHeader.substring(0, dataToBeSentHeader.indexOf("\n\n"));
 	       
 	       System.out.println(dataToBeSentHeader);
 	       
 	       System.out.println("Header received. Now please enter your data/text:");
-	       lastFour= "  ";
-	       while (!lastFour.equals("\n\n")){
+	       lastTwo= "  ";
+	       while (!lastTwo.equals("\n\n")){		// now get the message body
 	    	   nextChar = (char)System.in.read();
 	    	   dataToBeSentBody = dataToBeSentBody + nextChar;
-	    	   lastFour = lastFour.substring(1, lastFour.length()) + nextChar; //shift one and add new character   
+	    	   lastTwo = lastTwo.substring(1, lastTwo.length()) + nextChar; //shift one and add new character   
 	       }
 	       dataToBeSentBody = dataToBeSentBody.substring(0, dataToBeSentBody.indexOf("\n\n"));
 	       
@@ -72,7 +62,7 @@ public class SendDataCommand extends Command {
 	}
 	
 	@Override
-	public void createDataToBeSent(String command){
+	public void createDataToBeSent(String command){		// you have to modify this because an extra line is needed for http 1.1 (host line)
 		
 		if (HTTPVersion.equals("1.0")){
 			toBeSent = command + " "  + hostExtension + " HTTP/1.0"+"\r\n";

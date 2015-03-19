@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 
-public class Put extends SendDataCommand{
+public class Put extends SendDataCommand{	// most of the work is done in the superclass
 
 	public Put(String shortHost, String hostExtension, String HTTPVersion, 
 			String command, Socket clientSocket) throws IOException {

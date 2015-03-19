@@ -15,7 +15,7 @@ public class Head extends RetrieveDataCommand {
 
 	public void execute() throws IOException{
 		super.execute();
-		PrintWriter out = new PrintWriter("header.txt");
+		PrintWriter out = new PrintWriter("header.txt");		// make new text file for header
 		out.println(this.header);
 		out.close();
 		if (this.HTTPVersion.equals("1.0")){
