@@ -40,10 +40,10 @@ public class WorkerRunnable implements Runnable{
 
 			//			
 			int inputFromClient = 0;
-			while (inputFromClient != -1){
-				System.out.println("The next step is a read that seems to take forever!");
+			while (true){
+				//System.out.println("The next step is a read that seems to take forever!");
 				inputFromClient = inFromClient.read();
-				System.out.println("read data" + inputFromClient);
+				//System.out.println("read data" + inputFromClient);
 				
 				//Matthijs is supercool!!!!
 				while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
@@ -84,16 +84,16 @@ public class WorkerRunnable implements Runnable{
 					}catch (FileNotFoundException fileNotFoundException){
 						System.out.println("ERROR 404 NOT FOUND");
 
-						String str;
-						try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"trollface.txt");
-						byte[] data = Files.readAllBytes(path);
-						str = new String(data, "UTF-8");
-						}
-						catch(Exception e){System.out.println("raar...");str = "";}
-						int strLength = str.length();
-						int contentLength = 24 + strLength;
+						//String str;
+						//try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"trollface.txt");
+						//byte[] data = Files.readAllBytes(path);
+						//str = new String(data, "UTF-8");
+						//}
+						//catch(Exception e){System.out.println("raar...");str = "";}
+						//int strLength = str.length();
+						//int contentLength = 24 + strLength;
 
-						String headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+contentLength+"\r\n\r\n" + "<html> not found \n"+str+"</html>";
+						String headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+24+"\r\n\r\n" + "<html> not found \n"+"</html>";
 
 						System.out.println(headerForClient);
 						outToClient.writeBytes(headerForClient);
@@ -109,7 +109,7 @@ public class WorkerRunnable implements Runnable{
 						outToClient.writeBytes(headerForClient);}
 				}
 			}
-			clientSocket.close();
+			//clientSocket.close();
 		}
 		catch(Exception e){e.printStackTrace();//    			clientSocket.close();}
 		}

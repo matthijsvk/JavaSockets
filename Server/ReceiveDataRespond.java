@@ -19,46 +19,53 @@ public class ReceiveDataRespond extends Respond {
 	@Override
 	public void execute() throws IOException {
 		parseHeader();
+		System.out.println("we parsed the headers");
 		readData();
 	}
 	
 	protected void readData() throws IOException {
+		System.out.println("the length of data is" + length);
 		int counter = 0;
 		while(counter < length){
-			data += inFromClient.read();
+			data += (char) inFromClient.read();
+			counter += 1; 
 		}
 	}
 
 	public void parseHeader() {
-		int counter = 1;
-		String header = ""; 
+		int counter = 0;
+//		String header = ""; 
 		while(counter < request.length){
-			if(!request[counter].equals(null)){header += request[counter];}
+			System.out.println(request[counter]);
+			if(request[counter] !=(null) && request[counter].contains("Content-Length: ")){
+				length = Integer.parseInt(request[counter].substring(16,request[counter].length()-2));
+				}
+			counter += 1;
 		}
 
 
 		//parse for content length
-		int indexOfLength = header.indexOf("Content-Length:");
-		if (indexOfLength >0){
-			boolean lengthNotFound = true;
-			while (lengthNotFound ){
-				if( (header.substring(indexOfLength,indexOfLength+1)).equals(" ")){
-					lengthNotFound = false;
-				}
-				indexOfLength += 1;
-			}
-			boolean endOfLengthNotFound = true;
-			int indexOfEndOfLength = indexOfLength;
-			while (endOfLengthNotFound ){
-				indexOfEndOfLength += 1;
-				if( (header.charAt(indexOfEndOfLength)==13) || (header.substring(indexOfEndOfLength,indexOfEndOfLength+1)).equals(" ")) {
-					endOfLengthNotFound = false;
-				}
-			}
-			length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
-		}
-		else{
-			length = -1;
-		}
+//		int indexOfLength = header.indexOf("Content-Length:");
+//		if (indexOfLength >0){
+//			boolean lengthNotFound = true;
+//			while (lengthNotFound ){
+//				if( (header.substring(indexOfLength,indexOfLength+1)).equals(" ")){
+//					lengthNotFound = false;
+//				}
+//				indexOfLength += 1;
+//			}
+//			boolean endOfLengthNotFound = true;
+//			int indexOfEndOfLength = indexOfLength;
+//			while (endOfLengthNotFound ){
+//				indexOfEndOfLength += 1;
+//				if( (header.charAt(indexOfEndOfLength)==13) || (header.substring(indexOfEndOfLength,indexOfEndOfLength+1)).equals(" ")) {
+//					endOfLengthNotFound = false;
+//				}
+//			}
+//			length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
+//		}
+//		else{
+//			length = -1;
+//		}
 	}
 }
