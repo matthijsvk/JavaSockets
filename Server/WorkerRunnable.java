@@ -86,16 +86,16 @@ public class WorkerRunnable implements Runnable{
 					}catch (FileNotFoundException fileNotFoundException){
 						System.out.println("ERROR 404 NOT FOUND");
 
-						//String str;
-						//try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"trollface.txt");
-						//byte[] data = Files.readAllBytes(path);
-						//str = new String(data, "UTF-8");
-						//}
-						//catch(Exception e){System.out.println("raar...");str = "";}
-						//int strLength = str.length();
-						//int contentLength = 24 + strLength;
+						String str;
+						try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"404.html");
+						byte[] data = Files.readAllBytes(path);
+						str = new String(data, "UTF-8");
+						}
+						catch(Exception e){System.out.println("raar...");str = "";}
+						int strLength = str.length();
+						int contentLength = strLength;
 
-						String headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+24+"\r\n\r\n" + "<html> not found \n"+"</html>";
+						String headerForClient = "HTTP/1.1 404 Not Found\r\n"+"Content-Type: text/html\r\n"+"Content-Length: "+contentLength+"\r\n\r\n" + str;
 
 						System.out.println(headerForClient);
 						outToClient.writeBytes(headerForClient);
