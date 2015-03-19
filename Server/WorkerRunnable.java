@@ -113,7 +113,8 @@ public class WorkerRunnable implements Runnable{
 						}
 
 						//System.out.println(headerForClient);
-						outToClient.writeBytes(headerForClient);
+						try{outToClient.writeBytes(headerForClient);}
+						catch (Exception e){;}
 					}catch (IOException anyOtherException){
 						System.out.println("ERROR 500 SERVER ERROR");
 						String headerForClient = "HTTP/1.1 500 Server Error\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "<html> server error </html>";
