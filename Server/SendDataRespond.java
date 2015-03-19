@@ -12,23 +12,32 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+//This is a class for responses to head and get requests
 public class SendDataRespond extends Respond {
 
 	protected String header = "";
 	protected Path path;
 
-
+	/**
+	 * Constructor
+	 */
 	public SendDataRespond(String[] request, DataOutputStream outToClient,
 			BufferedInputStream inFromClient, int port) throws IOException {
 		super(request, outToClient, inFromClient, port);
 	}
 
+	/**
+	 * This executes the request
+	 */
 	@Override
 	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException {
 		super.execute();
 		this.sendHeader();
 	}
-
+	
+	/**
+	 * Scans the requested file and makes a header for it, then sends the header to the client
+	 */
 	private void sendHeader() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
 		byte[] data;
 		String pathAsString = this.getPath();
@@ -55,7 +64,10 @@ public class SendDataRespond extends Respond {
 	}
 
 
-
+	/**
+	 * Checks if the client has an outdated version of the requested file,
+	 * throws a NotModifiedException if not.
+	 */
 	private void checkIfModified() throws ParseException, NotModifiedSinceException {
 		System.out.println("checking date now");
 		int counter = 0;
@@ -75,7 +87,10 @@ public class SendDataRespond extends Respond {
 			}
 		}
 	}
-
+	
+	/**
+	 * Gets the path to the requested file from the requested URL
+	 */
 	private String getExtensionFromPath(String pathAsString) {
 		int counter = pathAsString.length();
 		while(!pathAsString.substring(counter-1, counter).equals(".")){
@@ -87,9 +102,6 @@ public class SendDataRespond extends Respond {
 	/**
 	 * this function returns the path to a file. If the file is a website (www.test.com), is is stored in test/test.html
 	 * 											 If the file is a normal file (www.test.com/dir/file), it is stored in test/dir/file
-	 * @param shortHost
-	 * @param hostExtension
-	 * @return
 	 */
 	public String getPath(){
 		String path = null;
