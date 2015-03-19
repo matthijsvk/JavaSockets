@@ -96,6 +96,11 @@ public class Get extends RetrieveDataCommand {
 		createDirStructure(path);
 
 		// create file to write to
+		if (!(this.getExtensionFromPath(path).equals(this.extension))){	// if you received a 404 on a jpg get for example
+			path = path.substring(0, path.indexOf("."));
+			path = path + "ERROR" + ".txt";
+		}
+		
 		FileOutputStream binWriter = new FileOutputStream(path);
 
 		// Read data from the server
@@ -227,6 +232,8 @@ public class Get extends RetrieveDataCommand {
 			}
 		}
 		extension = header.substring(indexOfType, indexOfEndOfType);
+		
+		System.out.println("The extension is: " +extension);
 
 
 		//parse for content length
@@ -370,6 +377,8 @@ public class Get extends RetrieveDataCommand {
 			}
 			placeInUrl = placeInUrl -1;
 		}
+		System.out.println(path);
+		System.out.println("The extension from the path is : " + extension);
 		return extension;
 	}
 	
