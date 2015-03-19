@@ -30,7 +30,7 @@ public class RetrieveDataCommand extends Command {
 		// Read data from the server and write it to the screen.
 		int outputFromServer = inFromServer.read();
 		while (outputFromServer != -1 && !entityPartStarted){
-			if (a == 10 && b == 13 && c == 10 && d == 13){
+			if (a == 10 && b == 13 && c == 10 && d == 13){		// \r\n\r\n
 				entityPartStarted = true;
 			}
 			if (!entityPartStarted){

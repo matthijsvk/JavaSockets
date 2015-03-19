@@ -35,7 +35,10 @@ public class Get extends RetrieveDataCommand {
 		
 		super.execute();
 		this.parseHeader();
-		this.pullEntity();
+		if (!this.file.exists()){	//if the file already exists, do not overwrite it
+			//System.out.println("this file does not exist yet");
+			this.pullEntity();
+		}
 		if (this.HTTPVersion.equals("1.0")){
 			this.terminate();	// terminate the connection created by this Command
 			//must be here instead of in superclass because maybe you want to do other stuff after the super.execute, but before the this.terminate
@@ -54,14 +57,11 @@ public class Get extends RetrieveDataCommand {
 			toBeSent = command + " "  + hostExtension + " HTTP/1.0";
 		}
 		else if (HTTPVersion.equals("1.1")){
-			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "host:" + shortHost ;
+			toBeSent = command + " " + hostExtension + " HTTP/1.1" + "\r\n" + "Host: " + shortHost ;
 		}
 		else{
 			//throw error
 		}
-		
-		//if (this.file != null)
-		//	System.out.println("THE FILES HESRE: " +this.file+ this.file.exists());
 		
 		// if the file already exists on the file system, check the last time it was modified and send that in the GET header
 		if (this.file != null && this.file.exists()){
@@ -86,7 +86,6 @@ public class Get extends RetrieveDataCommand {
 	/**
 	 * This method reads data from the server and interprets it. If it is a website (html), it is parsed and all embedded images are GET'ed too.
 	 * 															If if is another file, it is downloaded and saved to the appropriate location on the local system
-	 * @throws IOException
 	 */
 	private void pullEntity() throws IOException {
 
@@ -107,7 +106,7 @@ public class Get extends RetrieveDataCommand {
 
 		// Read data from the server
 		if (this.extension.equals("html")){
-			System.out.println("First GETting all images....");
+			//System.out.println("First GETting all images....");
 			System.out.println();}
 		else
 			System.out.println("START getting " + this.extension + " type file");	//TODO
@@ -214,7 +213,11 @@ public class Get extends RetrieveDataCommand {
 	private void parseHeader() {
 
 		//Parse for file extension
+		
+		//first search for content type, and get the extension of the file
 		int indexOfType = header.indexOf("Content-Type:");
+		if (! header.contains("Content-Type:"))
+				indexOfType = 0;
 		boolean extensionNotFound = true;
 		while (extensionNotFound ){
 			if( (header.substring(indexOfType,indexOfType+1)).equals("/")){
@@ -233,9 +236,6 @@ public class Get extends RetrieveDataCommand {
 		}
 		extension = header.substring(indexOfType, indexOfEndOfType);
 		
-		System.out.println("The extension is: " +extension);
-
-
 		//parse for content length
 		int indexOfLength = header.indexOf("Content-Length:");
 		if (indexOfLength >0){
@@ -263,8 +263,6 @@ public class Get extends RetrieveDataCommand {
 	
 	/**
 	 * This method extracts the host URL and the extension from a href="url" url, so it can be GET'ed.
-	 * @param URL
-	 * @return
 	 */
 	public String[] parseShort_ExtensionURL(String URL){
 		//for files on a different web server
@@ -294,9 +292,6 @@ public class Get extends RetrieveDataCommand {
 	/**
 	 * This method returns the path to a file. If the file is a website (www.test.com), is is stored in test/test.html
 	 * 											 If the file is a normal file (www.test.com/dir/file), it is stored in test/dir/file
-	 * @param shortHost
-	 * @param hostExtension
-	 * @return
 	 */
 	public String getPath(String shortHost, String hostExtension){
 		String path;
@@ -316,6 +311,12 @@ public class Get extends RetrieveDataCommand {
 		}
 		
 		//System.out.println("GETTING Path: " + path + " ... was "+shortHost+ " "+hostExtension);
+		while (path.contains("%20")){	// replace %20 with spaces
+			path.replaceAll("%20"," ");
+			int indexOfSpace = path.indexOf("%20");
+			String path1 = path.substring(0, indexOfSpace);
+			path = path1 + " "+ path.substring(indexOfSpace + "%20".length());
+		}
 		
 		return path;
 	}
@@ -323,8 +324,6 @@ public class Get extends RetrieveDataCommand {
 
 	/**
 	 * This method creates the directory structure so that files can be saved to the location specified in their path
-	 * @param path
-	 * @param name
 	 */
 	public void createDirStructure(String path){
 
@@ -347,8 +346,6 @@ public class Get extends RetrieveDataCommand {
 
 	/**
 	 * This method gets the name of a file based on its path. Basically, this returns all the chars before the last slash
-	 * @param path
-	 * @return
 	 */
 	public String getFileName(String path){
 		String name;
@@ -367,8 +364,6 @@ public class Get extends RetrieveDataCommand {
 
 	/**
 	 * This method returns the file extension of a file based on its path (filename works too). Basically, it returns all the chars before the last "."
-	 * @param path
-	 * @return
 	 */
 	public static String getExtensionFromPath(String path){
 		// get file EXTENSION (loop in reverse over chars until '.' found
@@ -380,15 +375,11 @@ public class Get extends RetrieveDataCommand {
 			}
 			placeInUrl = placeInUrl -1;
 		}
-		System.out.println(path);
-		System.out.println("The extension from the path is : " + extension);
 		return extension;
 	}
 	
 	/**
 	 * This method returns the given date in the HTTP standard format.
-	 * @param date
-	 * @return
 	 */
 	private String formatDate(Date date){
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -399,7 +390,6 @@ public class Get extends RetrieveDataCommand {
 	
 	/**
 	 * This method returns the path this GET object has on the local system.
-	 * @return
 	 */
 	private File getFile() {
 		//String hostDirName = shortHost.replace("www.","");int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);

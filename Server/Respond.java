@@ -35,8 +35,9 @@ public abstract class Respond {
 	 */
 	//TODO: bij alles eigenlijk is geen rekening gehouden met 1.1 of 1.0
 	private void checkForHostLineIf11() throws IOException, BadRequestException {
-		if(httpVersion.equals("1.1") && !request[1].equals("Host: localhost"+"\r\n")){
+		if(httpVersion.equals("1.1") && !request[1].toLowerCase().equals("Host: localhost".toLowerCase()+"\r\n")){
 			System.out.println("ERROR: HTTP 1.1 requested and no host header line!");
+			System.out.println(request[1]);
 			throw new BadRequestException();
 		}
 	}

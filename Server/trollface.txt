@@ -1,5 +1,9 @@
-           							.....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'..
-                            ..';cldkO00KXNNNNXXXKK000OOkkkkkxxxxxddoooddddddxxxxkkkkOO0XXKx:.
+<head>
+<title>Example</title>
+</head>
+<body>
+<pre>				.....'',;;::cccllllllllllllcccc:::;;,,,''...'',,'..
+                       ..';cldkO00KXNNNNXXXKK000OOkkkkkxxxxxddoooddddddxxxxkkkkOO0XXKx:.
                       .':ok0KXXXNXK0kxolc:;;,,,,,,,,,,,;;,,,''''''',,''..              .'lOXKd'
                  .,lx00Oxl:,'............''''''...................    ...,;;'.             .oKXd.
               .ckKKkc'...'',:::;,'.........'',;;::::;,'..........'',;;;,'.. .';;'.           'kNKc.
@@ -45,3 +49,4 @@
           .;d0XX0kdlc:;,,,',,,;;:clodkO0KK0Okdl:,'..
               .,coxO0KXXXXXXXKK0OOxdoc:,..
                         ...
+</pre></body>
