@@ -32,6 +32,7 @@ public class PostRespond extends ReceiveDataRespond {
 		}catch( IOException exception){str = "";}
 		PrintWriter out = new PrintWriter("posts.txt");
 		out.print(str);
+		System.out.println(data);
 		out.print(data);
 		out.close();
 	}

@@ -20,7 +20,7 @@ public class ThreadedPoolServer implements Runnable{
 	public ThreadedPoolServer(int port){
 		this.serverPort = port;
 	}
-	protected static int   serverPort   = 6069;
+	protected static int   serverPort   = 6071;
 	protected ServerSocket serverSocket = null;
 	protected boolean      isStopped    = false;
 	protected Thread       runningThread= null;
@@ -44,7 +44,6 @@ public class ThreadedPoolServer implements Runnable{
 		synchronized(this){this.runningThread = Thread.currentThread();}	//synchronize the threads
 		try { 
 			this.serverSocket = new ServerSocket(this.serverPort);		//create a new socket on the port to listen for new Clients
-			serverSocket.setSoTimeout(40000);
 		} catch (IOException e) {throw new RuntimeException("Cannot open port"+serverPort, e);}
 
 		while(! isStopped()){

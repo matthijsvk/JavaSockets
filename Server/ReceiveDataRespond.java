@@ -51,7 +51,6 @@ public class ReceiveDataRespond extends Respond {
 		int counter = 0;
 //		String header = ""; 
 		while(counter < request.length){
-			System.out.println(request[counter]);
 			if(request[counter] !=(null) && request[counter].contains("Content-Length: ")){
 				length = Integer.parseInt(request[counter].substring(16,request[counter].length()-2));
 				}
