@@ -220,7 +220,7 @@ public class Get extends RetrieveDataCommand {
 				indexOfType = 0;
 		boolean extensionNotFound = true;
 		while (extensionNotFound ){
-			if( (header.substring(indexOfType,indexOfType+1)).equals("/")){
+			if( (header.substring(indexOfType,indexOfType+1)).equals("/")){  //search for slash, after slash is the extension
 				extensionNotFound = false;
 			}
 			indexOfType += 1;
@@ -229,7 +229,7 @@ public class Get extends RetrieveDataCommand {
 		int indexOfEndOfType = indexOfType;
 		while (endOfExtensionNotFound ){
 			indexOfEndOfType += 1;
-			if( (header.charAt(indexOfEndOfType)==13) || (header.substring(indexOfEndOfType,indexOfEndOfType+1)).equals(" ") 
+			if( (header.charAt(indexOfEndOfType)==13) || (header.substring(indexOfEndOfType,indexOfEndOfType+1)).equals(" ") //extension is everything from slash to " " or newline
 					|| header.substring(indexOfEndOfType,indexOfEndOfType+1).equals(";")) {
 				endOfExtensionNotFound = false;
 			}
@@ -241,7 +241,7 @@ public class Get extends RetrieveDataCommand {
 		if (indexOfLength >0){
 			boolean lengthNotFound = true;
 			while (lengthNotFound ){
-				if( (header.substring(indexOfLength,indexOfLength+1)).equals(" ")){
+				if( (header.substring(indexOfLength,indexOfLength+1)).equals(" ")){	//search for space, after the space is the length number
 					lengthNotFound = false;
 				}
 				indexOfLength += 1;
@@ -254,39 +254,11 @@ public class Get extends RetrieveDataCommand {
 					endOfLengthNotFound = false;
 				}
 			}
-			length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
+			length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));	//convert String to int
 		}
 		else{
 			length = 0;
 		}
-	}
-	
-	/**
-	 * This method extracts the host URL and the extension from a href="url" url, so it can be GET'ed.
-	 */
-	public String[] parseShort_ExtensionURL(String URL){
-		//for files on a different web server
-		String shortURL; String URLExtension;
-		if (URL.contains("www.")){	
-			if (URL.contains("/")){
-				shortURL = URL.substring(0, URL.indexOf("/"));
-				URLExtension = URL.substring(URL.indexOf("/"), URL.length());
-			}
-			else{
-				shortURL = URL;
-				URLExtension = "/";
-			}
-		}
-		else{
-			shortURL = shortHost;
-			URLExtension = "/"+URL;
-		}
-
-		//add leading slash if not exists
-		if (URLExtension.indexOf("/") != 0)		
-			URLExtension = "/" + URLExtension;
-		
-		return new String[] {shortURL, URLExtension};
 	}
 
 	/**
@@ -295,24 +267,24 @@ public class Get extends RetrieveDataCommand {
 	 */
 	public String getPath(String shortHost, String hostExtension){
 		String path;
-		String hostDirName = this.shortHost.replace("www.",""); 
+		String hostDirName = this.shortHost.replace("www.",""); 	// hostDirName is used to create a different directory for each queried website
 		if(hostDirName.contains(".")){
-			int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
+			int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);	//get rid of "www." and ".com" stuff
 		}
 
 		if (hostExtension.equals("/")){							//if you're requesting 'www.test.com' or 'www.test.com/',
 			path = hostDirName+ "/" + hostDirName + ".html";	// it is stored under 'test/test.html'
 		}
 		else{
-			if (hostExtension.indexOf("/") == 0)	//for normal files
-				path = hostDirName + hostExtension;
+			if (hostExtension.indexOf("/") == 0)	// for normal files,
+				path = hostDirName + hostExtension; // store under the folder of their website
 			else
-				path= hostDirName + "/" + "somethingWentWrong.error";
+				path= hostDirName + "/" + "somethingWentWrong.error";	//this never occurs
 		}
 		
 		//System.out.println("GETTING Path: " + path + " ... was "+shortHost+ " "+hostExtension);
-		while (path.contains("%20")){	// replace %20 with spaces
-			path.replaceAll("%20"," ");
+		while (path.contains("%20")){	// replace %20 with spaces because it does not happen automatically
+			//path.replaceAll("%20"," "); //this does not work for some reason
 			int indexOfSpace = path.indexOf("%20");
 			String path1 = path.substring(0, indexOfSpace);
 			path = path1 + " "+ path.substring(indexOfSpace + "%20".length());
@@ -389,10 +361,9 @@ public class Get extends RetrieveDataCommand {
 	}
 	
 	/**
-	 * This method returns the path this GET object has on the local system.
+	 * This method returns the (absolute) path this GET object has on the local system.
 	 */
 	private File getFile() {
-		//String hostDirName = shortHost.replace("www.","");int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
 	    String relativePath = getPath(this.shortHost, this.hostExtension);
 	    String workingDirPath = System.getProperty("user.dir") + System.getProperty("file.separator"); //hostDirName is already appended in getPath()
 
