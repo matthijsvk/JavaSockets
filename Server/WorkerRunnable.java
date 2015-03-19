@@ -87,7 +87,7 @@ public class WorkerRunnable implements Runnable{
 						System.out.println("ERROR 404 NOT FOUND");
 
 						String str;
-						try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"trollface.txt");
+						try{Path path = Paths.get(System.getProperty("user.dir")+System.getProperty("file.separator")+"Server/"+"404.html");//"trollface.txt"
 						byte[] data = Files.readAllBytes(path);
 						str = new String(data, "UTF-8");
 						}
@@ -108,10 +108,16 @@ public class WorkerRunnable implements Runnable{
 						System.out.println("ERROR 304 NOT MODIFIED");
 						String headerForClient = "HTTP/1.1 304 Not Modified\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "<html> server error </html>";
 						System.out.println(headerForClient);
+						outToClient.writeBytes(headerForClient);
+					}catch (BadRequestException badRequestException){
+						System.out.println("ERROR 400 BAD REQUEST");
+						String headerForClient = "HTTP/1.1 400 Bad request\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 26" + "\r\n\r\n" + "<html> bad request </html>";
+						System.out.println(headerForClient);
 						outToClient.writeBytes(headerForClient);}
+					if(query.httpVersion.equals("1.0")){break;}
 				}
 			}
-			//clientSocket.close();
+			clientSocket.close();
 		}
 		catch(Exception e){e.printStackTrace();//    			clientSocket.close();}
 		}

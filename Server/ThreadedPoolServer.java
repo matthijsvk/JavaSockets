@@ -15,41 +15,36 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-
+//Main class which starts the server and calls threads which open connections to clients
 public class ThreadedPoolServer implements Runnable{
 	public ThreadedPoolServer(int port){
 		this.serverPort = port;
 	}
-	protected static int   serverPort   = 6068;
+	protected static int   serverPort   = 6069;
 	protected ServerSocket serverSocket = null;
 	protected boolean      isStopped    = false;
 	protected Thread       runningThread= null;
 	protected ExecutorService threadPool =  Executors.newFixedThreadPool(100);		//thread pool contains 10 threads
 
-	/**Start a server and keep it running for a while, then shut it down
-	 * @param args
+	
+	/**
+	 * Start a server and keep it running for a while, then shut it down
 	 */
 	public static void main(String[] args) {
 		ThreadedPoolServer server = new ThreadedPoolServer(serverPort);
 		new Thread(server).start();	//this starts a new thread which executes the run() method in this class. 
-
-//		try {
-//			Thread.sleep(20 * 1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println("Stopping Server");
-//		server.stop();	//stop the while loop and finish all existing threads, refusing new connections
 	}
 
+	
 	/**
-	 * This method is executed when server (and thus the main method) is started.
+	 * This method is executed when server thread (and thus the main method) is started.
 	 */
 	@Override
 	public void run(){
 		synchronized(this){this.runningThread = Thread.currentThread();}	//synchronize the threads
 		try { 
-			this.serverSocket = new ServerSocket(this.serverPort);			//create a new socket on the port to listen for new Clients
+			this.serverSocket = new ServerSocket(this.serverPort);		//create a new socket on the port to listen for new Clients
+			serverSocket.setSoTimeout(40000);
 		} catch (IOException e) {throw new RuntimeException("Cannot open port"+serverPort, e);}
 
 		while(! isStopped()){
@@ -64,10 +59,12 @@ public class ThreadedPoolServer implements Runnable{
 		System.out.println("Server Stopped.") ;
 	}
 
+	
 	private synchronized boolean isStopped() {
 		return this.isStopped;
 	}
 
+	
 	public synchronized void stop(){
 		this.isStopped = true;
 		try {
