@@ -29,48 +29,48 @@ public class SendDataRespond extends Respond {
 	}
 
 	private void sendHeader() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
-			byte[] data;
-			String pathAsString = this.getPath();
-			path = Paths.get(pathAsString);
-			try {data = Files.readAllBytes(this.path);}
-			catch (IOException didNotFindFile){throw new FileNotFoundException();}
-			this.checkIfModified();
-			Date date = new Date();
-			// TODO: status updates moeten nog goed 
-			header += "HTTP/1.1 200 OK\r\n";
-			// TODO: geen idee of die datum ok is
-			header += "Date: " + date.toString() + "\r\n";
-			String extension = getExtensionFromPath(pathAsString);
-			header += "Content-Type: ";
-			if(extension.equals("html") || extension.equals("htm") || extension.equals("txt")){
-				header += "text/" + extension + "\r\n";
-			}
-			else{
-				header += "image/" + extension + "\r\n";
-			}
-			if(this.httpVersion.equals("1.0")){header += "Connection: close" + "\r\n";}
-			header += "Content-Length: " + Integer.toString(data.length) + "\r\n\r\n";
-			System.out.println(header);
+		byte[] data;
+		String pathAsString = this.getPath();
+		path = Paths.get(pathAsString);
+		try {data = Files.readAllBytes(this.path);}
+		catch (IOException didNotFindFile){throw new FileNotFoundException();}
+		this.checkIfModified();
+		Date date = new Date();
+		// TODO: status updates moeten nog goed 
+		header += "HTTP/1.1 200 OK\r\n";
+		// TODO: geen idee of die datum ok is
+		header += "Date: " + date.toString() + "\r\n";
+		String extension = getExtensionFromPath(pathAsString);
+		header += "Content-Type: ";
+		if(extension.equals("html") || extension.equals("htm") || extension.equals("txt")){
+			header += "text/" + extension + "\r\n";
+		}
+		else{
+			header += "image/" + extension + "\r\n";
+		}
+		if(this.httpVersion.equals("1.0")){header += "Connection: close" + "\r\n";}
+		header += "Content-Length: " + Integer.toString(data.length) + "\r\n\r\n";
+		System.out.println(header);
 	}
-	
-	
-	
+
+
+
 	private void checkIfModified() throws ParseException, NotModifiedSinceException {
 		int counter = 0;
-		while(this.request[counter].length() > 5  && !this.request[counter].substring(0, 6).equals("If-Mo")){
+		while(this.request[counter].length() > 5  && !this.request[counter].substring(0, 6).equals("If-Mod")){
 			counter += 1;
 		}
 		System.out.println(request[counter]);
 		if(!this.request[counter].equals("\r\n")){
-		String dateAsString = this.request[counter].substring(19);
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        Date result = dateFormat.parse(dateAsString);
-        result.getTime();
-        if(result.getTime() > this.path.toFile().lastModified()){
-        	throw new NotModifiedSinceException();
-        }
+			String dateAsString = this.request[counter].substring(19);
+			SimpleDateFormat dateFormat = new SimpleDateFormat(
+					"EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+			Date result = dateFormat.parse(dateAsString);
+			result.getTime();
+			if(result.getTime() > this.path.toFile().lastModified()){
+				throw new NotModifiedSinceException();
+			}
 		}
 	}
 

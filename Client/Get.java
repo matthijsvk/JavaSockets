@@ -71,8 +71,8 @@ public class Get extends RetrieveDataCommand {
 			
 		    String lastModified = formatDate(new Date(file.lastModified()));
 		    //System.out.println(lastModified);
-		    //toBeSent = toBeSent + "\r\n" +"If-Modified-Since: " + lastModified;
-		    toBeSent = toBeSent + "\r\n" +"Connection: Keep-Alive";
+		    toBeSent = toBeSent + "\r\n" +"If-Modified-Since: " + lastModified;
+		    //toBeSent = toBeSent + "\r\n" +"Connection: Keep-Alive";
 		}
 		
 		// finish toBeSent
@@ -96,11 +96,13 @@ public class Get extends RetrieveDataCommand {
 		createDirStructure(path);
 
 		// create file to write to
-		if (!(this.getExtensionFromPath(path).equals(this.extension))){	// if you received a 404 on a jpg get for example
-			path = path.substring(0, path.indexOf("."));
-			path = path + "ERROR" + ".txt";
+		if (!(this.getExtensionFromPath(path).equals("."+this.extension))){	// if you received a 404 on a jpg get for example
+			
+			path = path.substring(0, path.indexOf("."));		//replace the extension by the extension the server said it was
+			if (this.extension.equals("jpeg"))
+				this.extension = "jpg";
+			path = path + "." + this.extension;
 		}
-		
 		FileOutputStream binWriter = new FileOutputStream(path);
 
 		// Read data from the server
@@ -108,7 +110,7 @@ public class Get extends RetrieveDataCommand {
 			System.out.println("First GETting all images....");
 			System.out.println();}
 		else
-			System.out.println("START getting "+this.extension+ " type file");	//TODO
+			System.out.println("START getting " + this.extension + " type file");	//TODO
 
 		int dataInFromServer = 0; 			//bytes you receive
 		if (extension.equals("html") && getExtensionFromPath(path).equals(".html")){	// if html, you have to pare it and GET all embedded images	
@@ -257,7 +259,7 @@ public class Get extends RetrieveDataCommand {
 			length = Integer.parseInt(header.substring(indexOfLength, indexOfEndOfLength));
 		}
 		else{
-			length = -1;
+			length = 0;
 		}
 	}
 	
@@ -300,7 +302,10 @@ public class Get extends RetrieveDataCommand {
 	 */
 	public String getPath(String shortHost, String hostExtension){
 		String path;
-		String hostDirName = this.shortHost.replace("www.","");int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
+		String hostDirName = this.shortHost.replace("www.",""); 
+		if(hostDirName.contains(".")){
+			int puntIndex=hostDirName.indexOf(".");hostDirName = hostDirName.substring(0, puntIndex);
+		}
 
 		if (hostExtension.equals("/")){							//if you're requesting 'www.test.com' or 'www.test.com/',
 			path = hostDirName+ "/" + hostDirName + ".html";	// it is stored under 'test/test.html'

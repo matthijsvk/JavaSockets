@@ -40,10 +40,12 @@ public class WorkerRunnable implements Runnable{
 
 			//			
 			int inputFromClient = 0;
-			while (true){
-				//System.out.println("The next step is a read that seems to take forever!");
+			
+			System.out.println("starting server...");
+			
+			while (inputFromClient != -1){
 				inputFromClient = inFromClient.read();
-				//System.out.println("read data" + inputFromClient);
+				System.out.println("read data" + inputFromClient);
 				
 				//Matthijs is supercool!!!!
 				while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
