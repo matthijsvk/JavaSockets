@@ -31,12 +31,13 @@ public abstract class Respond {
 
 	/**
 	 * Checks if request is conform to HTTP 1.1 syntax, throws error if this is not the case
+	 * @throws BadRequestException 
 	 */
 	//TODO: bij alles eigenlijk is geen rekening gehouden met 1.1 of 1.0
-	private void checkForHostLineIf11() throws IOException {
+	private void checkForHostLineIf11() throws IOException, BadRequestException {
 		if(httpVersion.equals("1.1") && !request[1].equals("Host: localhost"+"\r\n")){
-			throw new BadRequestException();
 			System.out.println("ERROR: HTTP 1.1 requested and no host header line!");
+			throw new BadRequestException();
 		}
 	}
 
@@ -78,7 +79,7 @@ public abstract class Respond {
 		}
 	}
 
-	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException{
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException{
 		this.checkForHostLineIf11();
 	}
 

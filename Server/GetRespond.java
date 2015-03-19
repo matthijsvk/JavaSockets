@@ -24,7 +24,7 @@ public class GetRespond extends SendDataRespond{
 	 * Executes this command
 	 */
 	@Override
-	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException {
 		System.out.println("Started sending a get");
 		super.execute();
 		this.sendEntity();

@@ -4,6 +4,7 @@ package Server;
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 
 //This a class for the response of the server to a put or post command
 public class ReceiveDataRespond extends Respond {
@@ -24,7 +25,8 @@ public class ReceiveDataRespond extends Respond {
 	 * This executes the command, this means parsing the header and reading the sent entity data
 	 */
 	@Override
-	public void execute() throws IOException {
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException {
+		super.execute();
 		parseHeader();
 		System.out.println("we parsed the headers");
 		readData();

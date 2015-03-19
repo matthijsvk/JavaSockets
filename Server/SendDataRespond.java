@@ -24,7 +24,8 @@ public class SendDataRespond extends Respond {
 	}
 
 	@Override
-	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException {
+	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException {
+		super.execute();
 		this.sendHeader();
 	}
 
