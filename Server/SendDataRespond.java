@@ -34,7 +34,7 @@ public class SendDataRespond extends Respond {
 		super.execute();
 		this.sendHeader();
 	}
-	
+
 	/**
 	 * Scans the requested file and makes a header for it, then sends the header to the client
 	 */
@@ -87,7 +87,7 @@ public class SendDataRespond extends Respond {
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the path to the requested file from the requested URL
 	 */

@@ -40,13 +40,13 @@ public class WorkerRunnable implements Runnable{
 
 			//			
 			int inputFromClient = 0;
-			
+
 			System.out.println("starting server...");
-			
+			String HTTPVersion = "1.1";
 			while (inputFromClient != -1){
 				inputFromClient = inFromClient.read();
 				System.out.println("read data" + inputFromClient);
-				
+
 				//Matthijs is supercool!!!!
 				while(inputFromClient != -1 && inputFromClient != 10 && inputFromClient != 13 && inputFromClient != 10 && inputFromClient !=32){
 					System.out.println("Ready for new request!");
@@ -106,14 +106,20 @@ public class WorkerRunnable implements Runnable{
 						outToClient.writeBytes(headerForClient);
 					}catch (NotModifiedSinceException notModifiedSinceException){
 						System.out.println("ERROR 304 NOT MODIFIED");
-						String headerForClient = "HTTP/1.1 304 Not Modified\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "<html> server error </html>";
+						String headerForClient = "HTTP/1.1 304 Not Modified\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 27" + "\r\n\r\n" + "<html> not modified </html>";
+						System.out.println(headerForClient);
+						outToClient.writeBytes(headerForClient);
+					}catch (BadRequestException badRequestException){
+						System.out.println("ERROR 400 BAD REQUEST");
+						String headerForClient = "HTTP/1.1 400 Bad request\r\n"+"Content-Type: text/html\r\n"+"Content-Length: 26" + "\r\n\r\n" + "<html> bad request </html>";
 						System.out.println(headerForClient);
 						outToClient.writeBytes(headerForClient);}
+					if(query.httpVersion.equals("1.0")){break;}
 				}
 			}
-			//clientSocket.close();
+			clientSocket.close();
 		}
-		catch(Exception e){e.printStackTrace();//    			clientSocket.close();}
+		catch(Exception e){e.printStackTrace();
 		}
 	}
 }

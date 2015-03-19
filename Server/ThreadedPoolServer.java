@@ -49,7 +49,8 @@ public class ThreadedPoolServer implements Runnable{
 	public void run(){
 		synchronized(this){this.runningThread = Thread.currentThread();}	//synchronize the threads
 		try { 
-			this.serverSocket = new ServerSocket(this.serverPort);			//create a new socket on the port to listen for new Clients
+			this.serverSocket = new ServerSocket(this.serverPort);		//create a new socket on the port to listen for new Clients
+			serverSocket.setSoTimeout(4000);
 		} catch (IOException e) {throw new RuntimeException("Cannot open port"+serverPort, e);}
 
 		while(! isStopped()){
