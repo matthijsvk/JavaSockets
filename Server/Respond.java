@@ -37,9 +37,10 @@ public abstract class Respond {
 	private void checkIfConnectionCloseRequested() {
 		int counter = 1;
 		while(counter < this.request.length){
-			if(request[counter].contains("Connection: close")){
+			if(request[counter]!=null && request[counter].contains("Connection: close")){
 				this.connectionCloseRequested = true;
 			}
+			counter += 1;
 		}
 		
 	}

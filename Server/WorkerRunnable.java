@@ -134,6 +134,7 @@ public class WorkerRunnable implements Runnable{
 					if(query.httpVersion.equals("1.0")||query.connectionCloseRequested){break;}
 				}
 			}
+			System.out.println("closing connection");
 			clientSocket.close();
 		}
 		catch(Exception e){e.printStackTrace();

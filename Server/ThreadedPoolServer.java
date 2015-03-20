@@ -20,7 +20,7 @@ public class ThreadedPoolServer implements Runnable{
 	public ThreadedPoolServer(int port){
 		this.serverPort = port;
 	}
-	protected static int   serverPort   = 6078;
+	protected static int   serverPort   = 7000;
 	protected ServerSocket serverSocket = null;
 	protected boolean      isStopped    = false;
 	protected Thread       runningThread= null;
