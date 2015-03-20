@@ -49,7 +49,7 @@ public class ThreadedPoolServer implements Runnable{
 		while(! isStopped()){
 			Socket clientSocket = null;
 			//Close socket after timeout
-			try {clientSocket = this.serverSocket.accept();serverSocket.setSoTimeout(4000);} 				// listen for Clients
+			try {clientSocket = this.serverSocket.accept();serverSocket.setSoTimeout(20000);} 				// listen for Clients
 			catch (IOException e) {throw new RuntimeException("Error accepting client connection", e);}
 
 			this.threadPool.execute(		// start a new thread from the threadPool for the Client on the accept-socket. If the threadpool is empty, the Client will have to wait.
