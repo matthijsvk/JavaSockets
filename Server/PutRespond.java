@@ -27,9 +27,7 @@ public class PutRespond extends ReceiveDataRespond {
 	 */
 	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException{
 		super.execute();
-		double randDouble = Math.random()*100;
-		int randInt= (int) Math.round(randDouble);
-		PrintWriter out = new PrintWriter("put"+randInt+".txt");
+		PrintWriter out = new PrintWriter("put"+".txt");
 		out.print(data);
 		out.close();
 	}
