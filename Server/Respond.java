@@ -17,6 +17,7 @@ public abstract class Respond {
 	protected String shortHost;
 	protected String hostExtension;
 	protected int port;
+	protected boolean connectionCloseRequested = false; 
 
 	/**
 	 * Constructor, which also parses the request to be more usable for the server
@@ -27,6 +28,20 @@ public abstract class Respond {
 		this.outToClient = outToClient;
 		this.parseRequest();
 		this.port = port;
+		checkIfConnectionCloseRequested();
+	}
+	
+	/**
+	 * Checks if connection should be closed after the request
+	 */
+	private void checkIfConnectionCloseRequested() {
+		int counter = 1;
+		while(counter < this.request.length){
+			if(request[counter].contains("Connection: close")){
+				this.connectionCloseRequested = true;
+			}
+		}
+		
 	}
 
 	/**
@@ -63,7 +78,7 @@ public abstract class Respond {
 		System.out.println(httpVersion);
 
 
-
+		
 
 		host = host.replace("http://","");	//filter out http:// chars if they exist
 		if ((host.length() > 4) && (host.substring(0, 4).equals("www."))){

@@ -131,7 +131,7 @@ public class WorkerRunnable implements Runnable{
 						System.out.println(headerForClient);
 						outToClient.writeBytes(headerForClient);}
 					//Stop listening and close the connection if the client is using HTTP 1.0
-					if(query.httpVersion.equals("1.0")){break;}
+					if(query.httpVersion.equals("1.0")||query.connectionCloseRequested){break;}
 				}
 			}
 			clientSocket.close();
