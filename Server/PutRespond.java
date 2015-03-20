@@ -26,14 +26,11 @@ public class PutRespond extends ReceiveDataRespond {
 	 * Executes the post, this means that it writes the received data to a new local .txt file
 	 */
 	public void execute() throws IOException, FileNotFoundException, ParseException, NotModifiedSinceException, BadRequestException{
-		System.out.println("we are executing a put");
 		super.execute();
-		System.out.println("we got past the super");
 		double randDouble = Math.random()*100;
 		int randInt= (int) Math.round(randDouble);
 		PrintWriter out = new PrintWriter("put"+randInt+".txt");
 		out.print(data);
 		out.close();
-		System.out.println("we have executed a put");
 	}
 }
